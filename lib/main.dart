@@ -56,33 +56,45 @@ class _MyHomePageState extends State<MyHomePage> {
 
 // defiine init camera  as async function (use void)
   void _initializeCamera() async {
-    List<CameraDescription> cameras = await availableCameras();
-    int black_threshhold = 40;
+    if (_cameraInitialized == false) {
+      List<CameraDescription> cameras = await availableCameras();
+      int black_threshhold = 40;
 
-    //need to find out what the required resolution needs to be
-    // if the camera is also meant to preview then set to low
-    //shouldn't need to preview these images
-    _controller = CameraController(cameras[0], ResolutionPreset.medium);
-    _controller.initialize().then((_) async {
-      _cameraInitialized = true;
-      int frame_number = 0;
-      // start camera stream
-      await _controller // needs CameraInfo checks for orientation etc.
-          .startImageStream((CameraImage image) =>
-              processImageFrame(image, frame_number, black_threshhold));
-
-      setState(() {
-        _cameraInitialized;
+      _controller = CameraController(cameras[0], ResolutionPreset.medium);
+      _controller.initialize().then((_) async {
+        _cameraInitialized = true;
+        int frame_number = 0;
+        // start camera stream
+        await _controller // needs CameraInfo checks for orientation etc.
+            .startImageStream((CameraImage image) =>
+                processImageFrame(image, frame_number, black_threshhold));
       });
+    } else {
+      //_controller.stopImageStream();
+      dispose();
+      _cameraInitialized = false;
+    }
+
+    setState(() {
+      _cameraInitialized;
     });
   }
 
   // dispose and deactivate camera
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
+
+  // on and Off button
+  // _onOffSwitch(_cameraState) {
+  //   if (_cameraState == false) {
+  //     _initializeCamera();
+  //   } else {
+  //     dispose();
+  //   }
+  // }
 
   // Get course location
   _getCurrentLocation() {
