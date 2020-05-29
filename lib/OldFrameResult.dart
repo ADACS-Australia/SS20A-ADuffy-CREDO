@@ -36,22 +36,51 @@ class OldFrameResult extends BaseFrameResult {
       }
     }
 
-    var avg = sum / size;
-    double blacksPercentage = ((blacks * 10000) / size) / 100;
+    avg = sum ~/ size;
+    blacksPercentage = ((blacks * 10000) / size) / 100;
+    print(blacksPercentage);
   }
 
   @override
   isCovered(BaseCalibrationResult calibrationResult) {
-    if (calibrationResult is OldCalibrationResult) {
-      var statementInput =
-          calibrationResult.avg ?? calibrationResult.DEFAULT_BLACK_THRESHOLD;
-      bool result = (avg < statementInput && blacksPercentage >= 99.9);
+    if (!(calibrationResult is OldCalibrationResult) &&
+        (calibrationResult != null)) {
+      print(calibrationResult.runtimeType);
 
-      print("$result");
-      return result;
-    } else {
-      print("FALSE");
+      //return true; //TO DO: take out this return statement
       //throw Exception("Screen not covered");
     }
+
+    int statementInput;
+    if (calibrationResult is OldCalibrationResult) {
+      statementInput = calibrationResult.avg;
+    } else {
+      statementInput = OldCalibrationResult.DEFAULT_BLACK_THRESHOLD;
+    }
+
+    /// kotlin version was split into if statement for readability
+    //statementInput = (calibrationResult as OldCalibrationResult)?.avg ??
+    //    OldCalibrationResult.DEFAULT_BLACK_THRESHOLD;
+
+    bool result = (avg < statementInput && blacksPercentage >= 99.9);
+
+    print("$result");
+    return result;
+    //////////////////
+    //if ((calibrationResult is OldCalibrationResult) ) {
+    //  var statementInput =
+    //      calibrationResult.avg ?? calibrationResult.DEFAULT_BLACK_THRESHOLD;
+    //  bool result = (avg < statementInput && blacksPercentage >= 99.9);
+//
+    //  print("$result");
+    //  return result;
+    //}
+    //
+    //else {
+    //  print(calibrationResult.runtimeType);
+//
+    //  //return true; //TO DO: take out this return statement
+    //  //throw Exception("Screen not covered");
+    //}
   }
 }

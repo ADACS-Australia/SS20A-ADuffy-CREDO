@@ -98,7 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Get course location
   _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    final Geolocator geolocator = Geolocator()
+      ..forceAndroidLocationManager = true;
 
     geolocator
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
