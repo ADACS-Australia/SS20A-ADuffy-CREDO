@@ -45,10 +45,7 @@ class OldFrameResult extends BaseFrameResult {
   isCovered(BaseCalibrationResult calibrationResult) {
     if (!(calibrationResult is OldCalibrationResult) &&
         (calibrationResult != null)) {
-      print(calibrationResult.runtimeType);
-
-      //return true; //TO DO: take out this return statement
-      //throw Exception("Screen not covered");
+      ///TO DO: throw Exception("Screen not covered");
     }
 
     int statementInput;
@@ -64,7 +61,7 @@ class OldFrameResult extends BaseFrameResult {
 
     bool result = (avg < statementInput && blacksPercentage >= 99.9);
 
-    print("$result");
+    //print("$result");
     return result;
     //////////////////
     //if ((calibrationResult is OldCalibrationResult) ) {

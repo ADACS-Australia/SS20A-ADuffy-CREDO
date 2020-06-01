@@ -1,18 +1,25 @@
+import 'package:credo_transcript/OldCalibrationResult.dart';
 import 'package:credo_transcript/OldFrameResult.dart';
 import 'package:dartx/dartx.dart';
 
 class OldCalibrationFinder {
   int counter = 0;
-  double avgSum = 0;
-  double maxSum = 0;
+  int avgSum = 0;
+  int maxSum = 0;
   double blacksPercentageSum = 0;
   static const CALIBRATION_LENGHT = 500;
 
   calibrate_next_frame(OldFrameResult oldFrameResult) {
-    avgSum += oldFrameResult.avg;
-    blacksPercentageSum += oldFrameResult.blacksPercentage;
-    maxSum += oldFrameResult.max;
+    /// inelegant if statement solution TO DO: check with Lewis
+    ///
+
     counter++;
+
+    if (oldFrameResult.max != null) {
+      avgSum += oldFrameResult.avg;
+      blacksPercentageSum += oldFrameResult.blacksPercentage;
+      maxSum += oldFrameResult.max;
+    }
 
     if (counter >= CALIBRATION_LENGHT) {
       double avg = avgSum / CALIBRATION_LENGHT;
@@ -29,6 +36,15 @@ class OldCalibrationFinder {
 
       //OldCalibrationResult(
       //finalBlack.toInt(), finalAvg.toInt(), finalMax.toInt());
+      /// if I am correctly interpreting the kotlin code we should be returning an OldCaibrationResult
+      print(finalBlack.toInt().runtimeType);
+
+      var calibrationResult = new OldCalibrationResult();
+      calibrationResult.blackThreshhold = finalBlack.toInt();
+      calibrationResult.avg = finalAvg.toInt();
+      calibrationResult.max = finalMax.toInt();
+
+      return calibrationResult;
     } else {
       return null;
     }

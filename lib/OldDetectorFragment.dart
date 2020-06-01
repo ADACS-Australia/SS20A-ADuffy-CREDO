@@ -9,6 +9,7 @@ import 'OldFrameResult.dart';
 
 var calibrationResult = null;
 var DEFAULT_BLACK_THRESHOLD = 40;
+OldCalibrationFinder calibrationFinder = OldCalibrationFinder();
 
 // void function that calls on activate camera and starts image stream
 // will also need funtionality to connect to server
@@ -35,10 +36,11 @@ Future<dynamic> processImageFrame(
   if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage
     if (calibrationResult == null) {
-      calibrationResult = calibrate_next_frame(
-          frame_result.avg, frame_result.max, frame_result.blacksPercentage)[0];
+      calibrationResult = calibrationFinder.calibrate_next_frame(frame_result);
       print("$calibrationResult");
-      var progress = counter.toDouble() / CALIBRATION_LENGHT * 100;
+      var progress = calibrationFinder.counter /
+          OldCalibrationFinder.CALIBRATION_LENGHT *
+          100;
       print("calibration progress $progress %");
     } else {
       print('checking for hits');
