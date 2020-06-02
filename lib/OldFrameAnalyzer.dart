@@ -7,6 +7,8 @@ import 'dart:math';
 import 'OldFrameResult.dart';
 import 'OldCalibrationResult.dart';
 import 'package:image/image.dart';
+import 'LocationHelper.dart';
+import 'package:sensors/sensors.dart';
 
 BaseFrameAnalyzer OldFrameAnalyzer() {
   const HIT_BITMAP_SIZE = 60;
@@ -32,7 +34,7 @@ BaseFrameAnalyzer OldFrameAnalyzer() {
       var endX = min(frame.width, centerX + margin);
       var endY = min(frame.height, centerY + margin);
 
-      // TO DO: make image from stream into png here but may have to be moved
+      /// Accelerometer
 
       var dataString = encodePng(image);
 
@@ -40,17 +42,23 @@ BaseFrameAnalyzer OldFrameAnalyzer() {
 
       var hit = Hit();
       hit.frameContent = dataString;
-      hit.timestamp = frame.timestamp;
-      //hit.latitude = LocationHelper.location?.latitude
-      //hit.longitude = LocationHelper.location?.longitude
-      //hit.altitude = LocationHelper.location?.altitude
-      //hit.accuracy = LocationHelper.location?.accuracy
+      hit.timestamp = LocationHelper().location?.timestamp; //frame.timestamp;
+      hit.latitude = LocationHelper().location?.latitude;
+      hit.longitude = LocationHelper().location?.longitude;
+      hit.altitude = LocationHelper().location?.altitude;
+      hit.accuracy = LocationHelper().location?.accuracy;
       //hit.provider = LocationHelper.location?.provider
       hit.width = frame.width;
       hit.height = frame.height;
       hit.x = centerX;
       hit.y = centerY;
       hit.maxValue = _frameResult.max;
+
+      if (calibration is OldCalibrationResult) {
+        hit.blackThreshold = _calibration.blackThreshhold;
+      }
+      hit.average = _frameResult.avg.toDouble();
+      hit.blacksPercentage = _frameResult.blacksPercentage;
     }
   }
 // should already be in rgb

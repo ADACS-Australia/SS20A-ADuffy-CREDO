@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:geolocator/geolocator.dart';
 import 'package:sensors/sensors.dart';
 import 'OldDetectorFragment.dart';
+import 'LocationHelper.dart';
 
 Future<void> main() async {
   runApp(
@@ -71,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     } else {
       //_controller.stopImageStream();
+
       dispose();
       _cameraInitialized = false;
     }

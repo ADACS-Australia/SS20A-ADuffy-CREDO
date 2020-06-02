@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'OldFrameResult.dart';
+import 'package:sensors/sensors.dart';
 
 var calibrationResult = null;
 var DEFAULT_BLACK_THRESHOLD = 40;
@@ -37,14 +38,13 @@ Future<dynamic> processImageFrame(
     //isCovered(avg, calibrationResult, blacksPercentage
     if (calibrationResult == null) {
       calibrationResult = calibrationFinder.calibrate_next_frame(frame_result);
-      print("$calibrationResult");
+      //print("$calibrationResult");
       var progress = calibrationFinder.counter /
           OldCalibrationFinder.CALIBRATION_LENGHT *
           100;
       print("calibration progress $progress %");
     } else {
       print('checking for hits');
-      //var hit = checkHit()
     }
   } else {
     print("not covered");

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 class LocationHelper {
@@ -14,33 +16,45 @@ class LocationHelper {
     Future<GeolocationStatus> permission =
         geolocator.checkGeolocationPermissionStatus();
 
-    if (permission == GeolocationStatus.denied) {}
-  }
+    if (permission == GeolocationStatus.denied) {
+      location = null;
+    } else {
+      //geolocator
+      //    .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+      //    .then((Position position) {
+      //  location = position;
+      //});
 
-  @override
-  onLocationChanged(location, locationtime) {
-    ///why doesn't it complain about location.time
-    if (location != null) {
-      if (location.time > updateTime) {
-        updateTime = location.time;
-        //this@LocationHelper.location = location
+      var geolocator = Geolocator();
+      var locationOptions =
+          LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+
+      ///problem is on how to turn it off with the rest of the app ??
+      ///doe sit need a functiont hat cancels all subscriptions ??
+      ///     location, image, accelerometer etc...
+      StreamSubscription<Position> positionStream = geolocator
+          .getPositionStream(locationOptions)
+          .listen((Position position) {
+        location = position;
+      });
+
+      void _cancelStream() {
+        positionStream.cancel();
       }
     }
   }
-}
 
-_getCurrentLocation() {
-  final Geolocator geolocator = Geolocator()
-    ..forceAndroidLocationManager = true;
+//getCurrentLocation() {
+// final Geolocator geolocator = Geolocator()
+//   ..forceAndroidLocationManager = true;
 
-  geolocator
-      .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-      .then((Position position) {
-    //setState(() {
-    //_currentPosition = position;
-    //print(_currentPosition);
-    //});
-  }).catchError((e) {
-    print(e);
-  });
+// geolocator
+//     .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+//     .then((Position position) {
+//   //_currentPosition = position;
+//   //print(_currentPosition);
+//   //});
+// }).catchError((e) {
+//   print(e);
+// });
 }
