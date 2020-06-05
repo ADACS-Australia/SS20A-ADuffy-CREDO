@@ -5,6 +5,8 @@ import 'package:geolocator/geolocator.dart';
 class LocationHelper {
   var location = null;
   var updateTime = 0;
+  StreamSubscription<Position> positionStream;
+
   init() {
     /// if permission not granted return location == null
     /// else get time stamps and location
@@ -25,23 +27,23 @@ class LocationHelper {
       //  location = position;
       //});
 
-      var geolocator = Geolocator();
+      //var geolocator = Geolocator();
       var locationOptions =
           LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
       ///problem is on how to turn it off with the rest of the app ??
       ///doe sit need a functiont hat cancels all subscriptions ??
       ///     location, image, accelerometer etc...
-      StreamSubscription<Position> positionStream = geolocator
+      positionStream = geolocator
           .getPositionStream(locationOptions)
           .listen((Position position) {
         location = position;
       });
-
-      void _cancelStream() {
-        positionStream.cancel();
-      }
     }
+  }
+
+  void dispose() {
+    positionStream.cancel();
   }
 
 //getCurrentLocation() {

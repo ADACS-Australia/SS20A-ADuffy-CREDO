@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
+import 'package:credo_transcript/CameraHelper.dart';
 import 'dart:ffi';
 import 'package:geolocator/geolocator.dart';
 import 'package:sensors/sensors.dart';
 import 'OldDetectorFragment.dart';
 import 'LocationHelper.dart';
+import 'AccelerometerHelper.dart';
 
 Future<void> main() async {
   runApp(
@@ -38,82 +39,69 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  CameraController _controller;
-  bool _cameraInitialized = false;
+  //CameraController _controller;
+  //bool _cameraInitialized = false;
   Position _currentPosition;
+  var accelerometerValues;
 
   // init state and tell it to initialize camera
 
   @override
   void initState() {
     super.initState();
-    //accelerometerEvents.listen((AccelerometerEvent event) {
-    //print(event);
-    //});
-
-    // _initializeCamera(); // initializes to early if we want it on button pressed
-    // does this mean i do not need to initialize camera again in the streaming void function ?
   }
+
+  ///AllSensorsHelper
+  ///makes instances of all streams
+  ///startall(),stopall()
 
 // defiine init camera  as async function (use void)
-  void _initializeCamera() async {
-    if (_cameraInitialized == false) {
-      List<CameraDescription> cameras = await availableCameras();
-      int black_threshhold = 40;
+  //void _initializeCamera() async {
+  //  /// make into class
+  //  /// CameraHelper class
+  //  /// init() --> get cameras,
+  //  /// tooglecamera --> check cameraState to turn off and on
+  //  if (_cameraInitialized == false) {
+  //    List<CameraDescription> cameras = await availableCameras();
+  //    int black_threshhold = 40;
+//
+  //    _controller = CameraController(cameras[0], ResolutionPreset.medium);
+  //    _controller.initialize().then((_) async {
+  //      _cameraInitialized = true;
+  //      int frame_number = 0;
+  //      // start camera stream
+  //      await _controller // needs CameraInfo checks for orientation etc.
+  //          .startImageStream((CameraImage image) =>
+  //              processImageFrame(image, frame_number, black_threshhold));
+  //    });
+  //  } else {
+  //    //_controller.stopImageStream();
+//
+  //    dispose();
+  //    _cameraInitialized = false;
+  //  }
+//
+  //  setState(() {
+  //    _cameraInitialized;
+  //  });
+  //}
+//
+  //// dispose and deactivate camera
+  //@override
+  //void dispose() {
+  //  _controller.dispose();
+  //  super.dispose();
+  //}
 
-      _controller = CameraController(cameras[0], ResolutionPreset.medium);
-      _controller.initialize().then((_) async {
-        _cameraInitialized = true;
-        int frame_number = 0;
-        // start camera stream
-        await _controller // needs CameraInfo checks for orientation etc.
-            .startImageStream((CameraImage image) =>
-                processImageFrame(image, frame_number, black_threshhold));
-      });
-    } else {
-      //_controller.stopImageStream();
+  var helper = AccelerometerHelper();
+  var cameraHelper = CameraHelper();
 
-      dispose();
-      _cameraInitialized = false;
-    }
-
-    setState(() {
-      _cameraInitialized;
-    });
+  _initializeDetector() {
+    helper.toggleAccelerometerValues();
+    //print(SensorHelper().accelerometerState);
   }
 
-  // dispose and deactivate camera
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  // on and Off button
-  // _onOffSwitch(_cameraState) {
-  //   if (_cameraState == false) {
-  //     _initializeCamera();
-  //   } else {
-  //     dispose();
-  //   }
-  // }
-
-  // Get course location
-  _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()
-      ..forceAndroidLocationManager = true;
-
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-        //print(_currentPosition);
-      });
-    }).catchError((e) {
-      print(e);
-    });
-  }
+  /// make new button with the sole function to get and update accelerometerValues
 
   // makes the layout
   @override
@@ -130,16 +118,16 @@ class _MyHomePageState extends State<MyHomePage> {
               'Placeholder for image',
             ),
             RaisedButton(
-              onPressed: _getCurrentLocation,
+              onPressed: _initializeDetector,
               child: const Text('Get Location', style: TextStyle(fontSize: 20)),
             ),
-            Text("$_currentPosition"),
+            Text("$accelerometerValues"),
             RaisedButton(
-              onPressed: _initializeCamera,
+              onPressed: cameraHelper.toggleCamera(),
               child: const Text('START Image Stream',
                   style: TextStyle(fontSize: 20)),
             ),
-            Text("$_cameraInitialized"),
+            Text("_ means can't read"),
           ],
         ),
       ),
