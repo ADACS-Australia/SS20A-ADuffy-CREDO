@@ -1,3 +1,5 @@
+import 'package:credo_transcript/AllSensorsHelper.dart';
+
 import 'BaseFrameAnalyzer.dart';
 import 'Frame.dart';
 import 'BaseFrameResult.dart';
@@ -7,7 +9,7 @@ import 'dart:math';
 import 'OldFrameResult.dart';
 import 'OldCalibrationResult.dart';
 import 'package:image/image.dart';
-import 'LocationHelper.dart';
+import 'main.dart';
 import 'package:sensors/sensors.dart';
 
 BaseFrameAnalyzer OldFrameAnalyzer() {
@@ -42,11 +44,12 @@ BaseFrameAnalyzer OldFrameAnalyzer() {
 
       var hit = Hit();
       hit.frameContent = dataString;
-      hit.timestamp = LocationHelper().location?.timestamp; //frame.timestamp;
-      hit.latitude = LocationHelper().location?.latitude;
-      hit.longitude = LocationHelper().location?.longitude;
-      hit.altitude = LocationHelper().location?.altitude;
-      hit.accuracy = LocationHelper().location?.accuracy;
+      hit.timestamp = AllSensorsHelper
+          .locationHelper.location?.timestamp; //frame.timestamp;
+      hit.latitude = AllSensorsHelper.locationHelper.location?.latitude;
+      hit.longitude = AllSensorsHelper.locationHelper.location?.longitude;
+      hit.altitude = AllSensorsHelper.locationHelper.location?.altitude;
+      hit.accuracy = AllSensorsHelper.locationHelper.location?.accuracy;
       //hit.provider = LocationHelper.location?.provider
       hit.width = frame.width;
       hit.height = frame.height;

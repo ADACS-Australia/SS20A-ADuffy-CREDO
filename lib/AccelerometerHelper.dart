@@ -13,12 +13,12 @@ class AccelerometerHelper {
     _streamSubscriptions =
         accelerometerEvents.listen((AccelerometerEvent event) {
       accelerometerValues = event;
-      print(event);
+      //print(event);
     });
   }
 
   toggleAccelerometerValues() {
-    print(accelerometerState);
+    //print(accelerometerState);
     if (accelerometerState == false) {
       init();
       accelerometerState = true;

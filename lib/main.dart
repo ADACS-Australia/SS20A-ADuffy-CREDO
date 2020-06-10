@@ -1,3 +1,4 @@
+import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:credo_transcript/CameraHelper.dart';
 import 'dart:ffi';
@@ -40,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   //CameraController _controller;
-  //bool _cameraInitialized = false;
+  bool _cameraInitialized = false;
   Position _currentPosition;
   var accelerometerValues;
 
@@ -93,11 +94,20 @@ class _MyHomePageState extends State<MyHomePage> {
   //  super.dispose();
   //}
 
-  var helper = AccelerometerHelper();
-  var cameraHelper = CameraHelper();
+  var helper = AllSensorsHelper();
+  //var cameraHelper = CameraHelper();
+  Stopwatch stopwatch = new Stopwatch();
 
   _initializeDetector() {
-    helper.toggleAccelerometerValues();
+    if (_cameraInitialized == false) {
+      helper.startAllSensors();
+      stopwatch.start();
+      _cameraInitialized = true;
+    } else {
+      helper.stopAllSensors();
+      stopwatch.stop();
+      _cameraInitialized = false;
+    }
     //print(SensorHelper().accelerometerState);
   }
 
@@ -122,12 +132,13 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Get Location', style: TextStyle(fontSize: 20)),
             ),
             Text("$accelerometerValues"),
-            RaisedButton(
-              onPressed: cameraHelper.toggleCamera(),
-              child: const Text('START Image Stream',
-                  style: TextStyle(fontSize: 20)),
-            ),
-            Text("_ means can't read"),
+
+            //RaisedButton(
+            //  onPressed: print('object'), //cameraHelper.toggleCamera(),
+            //  child: const Text('START Image Stream',
+            //      style: TextStyle(fontSize: 20)),
+            //),
+            //Text("_ means can't read"),
           ],
         ),
       ),

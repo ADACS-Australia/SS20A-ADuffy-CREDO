@@ -2,20 +2,23 @@ import 'AccelerometerHelper.dart';
 import 'LocationHelper.dart';
 import 'CameraHelper.dart';
 
-//import 'TemperatureHelper.dart';
-//import 'GyroscopeHelper.dart';
-//import 'OrientationHelper.dart';
+//import 'TemperatureHelper.dart'; // can't get ambient temperature
+import 'GyroscopeHelper.dart';
+
+//import 'OrientationHelper.dart'; // not needed as not used
 ///Should this include a try and catch statement?
 class AllSensorsHelper {
-  AccelerometerHelper accHelper = AccelerometerHelper();
-  CameraHelper cameraHelper = CameraHelper();
-  LocationHelper locationHelper = LocationHelper();
+  static final AccelerometerHelper accHelper = AccelerometerHelper();
+  static final CameraHelper cameraHelper = CameraHelper();
+  static final LocationHelper locationHelper = LocationHelper();
+  static final GyroscopeHelper gyroHelper = GyroscopeHelper();
 
-  startAllSensor() {
+  startAllSensors() {
     try {
-      accHelper.init();
-      cameraHelper.init();
       locationHelper.init();
+      accHelper.init();
+      gyroHelper.init();
+      cameraHelper.init();
     } catch (e) {
       print(e);
     }
@@ -24,8 +27,9 @@ class AllSensorsHelper {
   stopAllSensors() {
     try {
       accHelper.dispose();
-      cameraHelper.dispose();
+      gyroHelper.dispose();
       locationHelper.dispose();
+      cameraHelper.dispose();
     } catch (e) {
       print(e);
     }

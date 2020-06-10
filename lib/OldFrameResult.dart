@@ -38,7 +38,7 @@ class OldFrameResult extends BaseFrameResult {
 
     avg = sum ~/ size;
     blacksPercentage = ((blacks * 10000) / size) / 100;
-    print(blacksPercentage);
+    //print(blacksPercentage);
   }
 
   @override
