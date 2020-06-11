@@ -18,8 +18,8 @@ class OldFrameResult extends BaseFrameResult {
     int size = width * height;
 
     int sum = 0;
-    int max = 0;
-    int maxIndex = 0;
+    max = 0;
+    maxIndex = 0;
     int blacks = 0;
 
     for (int i = 0; i < size; ++i) {
