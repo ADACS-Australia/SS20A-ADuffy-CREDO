@@ -24,12 +24,15 @@ class AllSensorsHelper {
     }
   }
 
+  /// I am starting the camera helper last but stopping it first
+  /// to ensure there is always data availible
+  /// for any incoming images
   stopAllSensors() {
     try {
+      cameraHelper.dispose();
       accHelper.dispose();
       gyroHelper.dispose();
       locationHelper.dispose();
-      cameraHelper.dispose();
     } catch (e) {
       print(e);
     }

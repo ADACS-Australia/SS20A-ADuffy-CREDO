@@ -1,14 +1,11 @@
-import 'dart:typed_data';
+import 'package:credo_transcript/Frame.dart';
 import 'package:credo_transcript/OldCalibrationResult.dart';
-
+import 'OldFrameAnalyzer.dart';
 import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
-import 'package:image/image.dart';
 import 'OldFrameResult.dart';
-import 'package:sensors/sensors.dart';
 
-var calibrationResult = null;
+var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
 OldCalibrationFinder calibrationFinder = OldCalibrationFinder();
 
@@ -24,13 +21,6 @@ Future<dynamic> processImageFrame(
 
   //calibrate_next_frame(avg, max, blacksPercentageSum);
 
-  //PLACEHOLDER for testing remove once done
-  OldCalibrationResult _notCovered = new OldCalibrationResult();
-  _notCovered.avg = 15;
-  _notCovered.blackThreshhold = 99;
-  _notCovered.max = 30;
-// remove above
-
   var _isCovered = frame_result.isCovered(
       calibrationResult); //frame_result.isCovered(calibrationResult);
 
@@ -44,7 +34,19 @@ Future<dynamic> processImageFrame(
           100;
       print("calibration progress $progress %");
     } else {
-      print('checking for hits');
+      /// convert image-processing into a frame
+
+      Frame frameProcessing = new Frame();
+      frameProcessing.byteArray = image_processing;
+      frameProcessing.width = image_processing.width;
+      frameProcessing.height = image_processing.height;
+      frameProcessing.exposureTime = null;
+      frameProcessing.imageFormat = null;
+      frameProcessing.timestamp = new DateTime.now();
+      print(frame_result.max);
+      print("$calibrationResult");
+      var hit = (OldFrameAnalyzer())
+          .checkHit(frameProcessing, frame_result, calibrationResult);
     }
   } else {
     print("not covered");

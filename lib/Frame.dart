@@ -4,5 +4,5 @@ class Frame {
   int height;
   int imageFormat;
   double exposureTime;
-  double timestamp;
+  var timestamp;
 }

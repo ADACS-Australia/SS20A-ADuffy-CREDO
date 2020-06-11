@@ -62,6 +62,16 @@ BaseFrameAnalyzer OldFrameAnalyzer() {
       }
       hit.average = _frameResult.avg.toDouble();
       hit.blacksPercentage = _frameResult.blacksPercentage;
+      hit.ax = AllSensorsHelper.accHelper.accelerometerValues.x;
+      hit.ay = AllSensorsHelper.accHelper.accelerometerValues.y;
+      hit.az = AllSensorsHelper.accHelper.accelerometerValues.z;
+      hit.temperature =
+          null; // too hardware dependant need feedback to if we are cutting it
+      print('found a hit');
+      print(DateTime.now());
+      return hit;
+    } else {
+      return null;
     }
   }
 // should already be in rgb
