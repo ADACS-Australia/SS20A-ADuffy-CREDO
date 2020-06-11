@@ -12,8 +12,8 @@ import 'package:image/image.dart';
 import 'main.dart';
 import 'package:sensors/sensors.dart';
 
-BaseFrameAnalyzer OldFrameAnalyzer() {
-  const HIT_BITMAP_SIZE = 60;
+class OldFrameAnalyzer extends BaseFrameAnalyzer {
+  final HIT_BITMAP_SIZE = 60;
 
   @override
   Hit checkHit(Frame frame, BaseFrameResult frameResult,
