@@ -38,7 +38,8 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
 
       /// Accelerometer
 
-      var dataString = encodePng(image);
+      var dataPng = encodePng(image);
+      var dataString = dataPng.toString();
 
       /// make to string for sending
 

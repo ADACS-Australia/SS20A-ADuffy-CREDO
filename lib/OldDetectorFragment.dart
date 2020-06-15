@@ -4,6 +4,8 @@ import 'OldFrameAnalyzer.dart';
 import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
 import 'OldFrameResult.dart';
+import 'Hit.dart';
+import 'FileUtils.dart';
 
 var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
@@ -43,10 +45,11 @@ Future<dynamic> processImageFrame(
       frameProcessing.exposureTime = null;
       frameProcessing.imageFormat = null;
       frameProcessing.timestamp = new DateTime.now();
-      print(frame_result.max);
-      print("$calibrationResult");
-      var hit = (OldFrameAnalyzer())
+
+      Hit hit = (OldFrameAnalyzer())
           .checkHit(frameProcessing, frame_result, calibrationResult);
+
+      FileUtils.saveToFile(hit.toString());
     }
   } else {
     print("not covered");

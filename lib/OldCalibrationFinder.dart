@@ -37,7 +37,7 @@ class OldCalibrationFinder {
       //OldCalibrationResult(
       //finalBlack.toInt(), finalAvg.toInt(), finalMax.toInt());
       /// if I am correctly interpreting the kotlin code we should be returning an OldCaibrationResult
-      print(finalBlack.toInt().runtimeType);
+      //print(finalBlack.toInt().runtimeType);
 
       var calibrationResult = new OldCalibrationResult();
       calibrationResult.blackThreshhold = finalBlack.toInt();
