@@ -7,21 +7,23 @@ class FileUtils {
     return directory.path;
   }
 
-  static Future<File> get getFile async {
+  static Future<String> get getFile async {
     final path = await getFilePath;
-    print('$path/myfile.txt');
-    return File('$path/myfile.txt');
+    //print('$path/testfile.txt');
+    String finalPath = path + '/testfile.txt';
+    return finalPath;
   }
 
   static Future<File> saveToFile(String data) async {
-    final file = await getFile;
-    return file.writeAsString(data);
+    final path = await getFile;
+    //final file = new File(path)
+    return File(path).writeAsString(data, mode: FileMode.append, flush: true);
   }
 
   static Future<String> readFromFile() async {
     try {
       final file = await getFile;
-      String fileContents = await file.readAsString();
+      String fileContents = await File(file).readAsString();
       return fileContents;
     } catch (e) {
       return "";

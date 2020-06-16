@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:credo_transcript/CameraHelper.dart';
 import 'dart:ffi';
 import 'package:geolocator/geolocator.dart';
-import 'package:sensors/sensors.dart';
-import 'OldDetectorFragment.dart';
-import 'LocationHelper.dart';
-import 'AccelerometerHelper.dart';
+import 'FileUtils.dart';
 
 Future<void> main() async {
   runApp(
@@ -44,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _cameraInitialized = false;
   Position _currentPosition;
   var accelerometerValues;
+  String fileContents = "No Data";
 
   // init state and tell it to initialize camera
 
@@ -51,48 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
   }
-
-  ///AllSensorsHelper
-  ///makes instances of all streams
-  ///startall(),stopall()
-
-// defiine init camera  as async function (use void)
-  //void _initializeCamera() async {
-  //  /// make into class
-  //  /// CameraHelper class
-  //  /// init() --> get cameras,
-  //  /// tooglecamera --> check cameraState to turn off and on
-  //  if (_cameraInitialized == false) {
-  //    List<CameraDescription> cameras = await availableCameras();
-  //    int black_threshhold = 40;
-//
-  //    _controller = CameraController(cameras[0], ResolutionPreset.medium);
-  //    _controller.initialize().then((_) async {
-  //      _cameraInitialized = true;
-  //      int frame_number = 0;
-  //      // start camera stream
-  //      await _controller // needs CameraInfo checks for orientation etc.
-  //          .startImageStream((CameraImage image) =>
-  //              processImageFrame(image, frame_number, black_threshhold));
-  //    });
-  //  } else {
-  //    //_controller.stopImageStream();
-//
-  //    dispose();
-  //    _cameraInitialized = false;
-  //  }
-//
-  //  setState(() {
-  //    _cameraInitialized;
-  //  });
-  //}
-//
-  //// dispose and deactivate camera
-  //@override
-  //void dispose() {
-  //  _controller.dispose();
-  //  super.dispose();
-  //}
 
   var helper = AllSensorsHelper();
   //var cameraHelper = CameraHelper();
@@ -132,6 +88,18 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Get Location', style: TextStyle(fontSize: 20)),
             ),
             Text("$accelerometerValues"),
+            RaisedButton(
+              child: Text("Read From File"),
+              onPressed: () {
+                FileUtils.readFromFile().then((contents) {
+                  print(contents);
+                  setState(() {
+                    fileContents = contents;
+                  });
+                });
+              },
+            ),
+            Text(fileContents),
 
             //RaisedButton(
             //  onPressed: print('object'), //cameraHelper.toggleCamera(),

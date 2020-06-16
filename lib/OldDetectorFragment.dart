@@ -48,8 +48,11 @@ Future<dynamic> processImageFrame(
 
       Hit hit = (OldFrameAnalyzer())
           .checkHit(frameProcessing, frame_result, calibrationResult);
-
-      FileUtils.saveToFile(hit.toString());
+      //print('$hit');
+      if (hit != null) {
+        FileUtils.saveToFile(
+            hit.toString() + ' ' + frameProcessing.timestamp.toString() + '\n');
+      }
     }
   } else {
     print("not covered");
