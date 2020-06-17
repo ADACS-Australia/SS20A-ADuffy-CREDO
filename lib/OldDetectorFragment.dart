@@ -29,7 +29,7 @@ Future<dynamic> processImageFrame(
   if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage
     if (calibrationResult == null) {
-      calibrationResult = calibrationFinder.calibrate_next_frame(frame_result);
+      calibrationResult = calibrationFinder.calibrateNextFrame(frame_result);
       //print("$calibrationResult");
       var progress = calibrationFinder.counter /
           OldCalibrationFinder.CALIBRATION_LENGHT *

@@ -1,7 +1,7 @@
 import 'BaseCalibrationResult.dart';
 
 class OldCalibrationResult extends BaseCalibrationResult {
-  int blackThreshhold;
+  int blackThreshold;
   int avg;
   int max;
   static const int DEFAULT_BLACK_THRESHOLD = 40;

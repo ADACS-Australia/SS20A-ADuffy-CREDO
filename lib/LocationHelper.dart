@@ -4,16 +4,18 @@ import 'package:geolocator/geolocator.dart';
 
 class LocationHelper {
   var location = null;
-  var updateTime = 0;
+  var updateTime;
   StreamSubscription<Position> positionStream;
 
   init() {
     /// if permission not granted return location == null
     /// else get time stamps and location
-    ///     if location was null request single location update
 
     final Geolocator geolocator = Geolocator()
       ..forceAndroidLocationManager = true;
+
+    /// forces to use specific android location manager for permission issues.
+    /// this should just be ignored bu ios devices
 
     Future<GeolocationStatus> permission =
         geolocator.checkGeolocationPermissionStatus();
@@ -21,42 +23,22 @@ class LocationHelper {
     if (permission == GeolocationStatus.denied) {
       location = null;
     } else {
-      //geolocator
-      //    .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-      //    .then((Position position) {
-      //  location = position;
-      //});
-
-      //var geolocator = Geolocator();
       var locationOptions =
           LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
-      ///problem is on how to turn it off with the rest of the app ??
-      ///doe sit need a functiont hat cancels all subscriptions ??
-      ///     location, image, accelerometer etc...
+      /// locationOptions controls settings such as the accuracy associated with he location returned
+
       positionStream = geolocator
           .getPositionStream(locationOptions)
           .listen((Position position) {
         location = position;
+        updateTime = DateTime.now();
       });
     }
   }
 
+  /// dispose method for the stream
   void dispose() {
     positionStream.cancel();
   }
-
-//getCurrentLocation() {
-// final Geolocator geolocator = Geolocator()
-//   ..forceAndroidLocationManager = true;
-
-// geolocator
-//     .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-//     .then((Position position) {
-//   //_currentPosition = position;
-//   //print(_currentPosition);
-//   //});
-// }).catchError((e) {
-//   print(e);
-// });
 }

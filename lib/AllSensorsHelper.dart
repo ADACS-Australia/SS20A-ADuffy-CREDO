@@ -2,11 +2,10 @@ import 'AccelerometerHelper.dart';
 import 'LocationHelper.dart';
 import 'CameraHelper.dart';
 
-//import 'TemperatureHelper.dart'; // can't get ambient temperature
+/// TODO import 'TemperatureHelper.dart' for checking battery temperature (not yet implemented)
 import 'GyroscopeHelper.dart';
 
-//import 'OrientationHelper.dart'; // not needed as not used
-///Should this include a try and catch statement?
+///AllSensorsHelper allows for all relevant sensors to be started and stopped simultaneously
 class AllSensorsHelper {
   static final AccelerometerHelper accHelper = AccelerometerHelper();
   static final CameraHelper cameraHelper = CameraHelper();
@@ -25,7 +24,7 @@ class AllSensorsHelper {
   }
 
   /// I am starting the camera helper last but stopping it first
-  /// to ensure there is always data availible
+  /// to ensure there is always data available
   /// for any incoming images
   stopAllSensors() {
     try {

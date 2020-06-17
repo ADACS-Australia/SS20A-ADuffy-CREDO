@@ -1,4 +1,7 @@
 class Hit {
+  /// hit object types that are different to their originals have been market in the commetns
+  /// Hit compiles all relevant data ready to send (no more processing post this)
+  /// Dart does not allow for serialisation TODO should variable names just be changed ?
 //    @PrimaryKey(autoGenerate = true)
   int id = 0;
   //@SerializedName("frame_content");
@@ -27,6 +30,8 @@ class Hit {
   int temperature = null;
 
   send() {
-    print('space for sending function'); // TO DO: needs send function
+    print('space for sending function');
+
+    /// TODO: needs send function
   }
 }

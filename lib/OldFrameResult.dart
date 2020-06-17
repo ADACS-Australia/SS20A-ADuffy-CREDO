@@ -3,6 +3,8 @@ import 'BaseCalibrationResult.dart';
 import 'OldCalibrationResult.dart';
 import 'package:camera/camera.dart';
 
+/// The code in this file is a direct adaptation from kotlin-jini.c in the original project code
+
 class OldFrameResult extends BaseFrameResult {
   int avg;
   double blacksPercentage;
@@ -12,7 +14,12 @@ class OldFrameResult extends BaseFrameResult {
   calculateFrame(CameraImage image_processing, var blackThreshold) {
     var height = image_processing.height;
     var width = image_processing.width;
-    // order is r g b a
+
+    /// Dart automatically works and converts to rgb regardless of operating system.
+    /// Each band is stored in a plane the order of planes is  "r g b a"
+    /// https://pub.dev/documentation/camera/latest/camera/Plane-class.html
+    /// currently we are just passing the red plane through
+    /// TODO: check whether only passing the red plane would cause issues
     var planes = image_processing.planes;
     var b = planes[0].bytes; // unit8list
     int size = width * height;
@@ -38,14 +45,13 @@ class OldFrameResult extends BaseFrameResult {
 
     avg = sum ~/ size;
     blacksPercentage = ((blacks * 10000) / size) / 100;
-    //print(blacksPercentage);
   }
 
   @override
   isCovered(BaseCalibrationResult calibrationResult) {
     if (!(calibrationResult is OldCalibrationResult) &&
         (calibrationResult != null)) {
-      ///TO DO: throw Exception("Screen not covered");
+      ///TODO: throw Exception("Screen not covered");
     }
 
     int statementInput;
@@ -56,28 +62,9 @@ class OldFrameResult extends BaseFrameResult {
     }
 
     /// kotlin version was split into if statement for readability
-    //statementInput = (calibrationResult as OldCalibrationResult)?.avg ??
-    //    OldCalibrationResult.DEFAULT_BLACK_THRESHOLD;
 
     bool result = (avg < statementInput && blacksPercentage >= 99.9);
 
-    //print("$result");
     return result;
-    //////////////////
-    //if ((calibrationResult is OldCalibrationResult) ) {
-    //  var statementInput =
-    //      calibrationResult.avg ?? calibrationResult.DEFAULT_BLACK_THRESHOLD;
-    //  bool result = (avg < statementInput && blacksPercentage >= 99.9);
-//
-    //  print("$result");
-    //  return result;
-    //}
-    //
-    //else {
-    //  print(calibrationResult.runtimeType);
-//
-    //  //return true; //TO DO: take out this return statement
-    //  //throw Exception("Screen not covered");
-    //}
   }
 }

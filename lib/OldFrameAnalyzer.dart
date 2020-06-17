@@ -24,33 +24,32 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
 
     Image image;
 
+    /// conditionals to qualify as a hit
     if (_frameResult.max > _max) {
       var margin = HIT_BITMAP_SIZE / 2;
       int centerX =
           _frameResult.maxIndex % frame.width; // % calculates the remainder
       int centerY = _frameResult.maxIndex ~/
-          frame.width; // ~ always returns non fration value
+          frame.width; // ~ always returns non fraction value
 
       var offsetX = max(0, centerX - margin);
       var offsetY = max(0, centerY - margin);
       var endX = min(frame.width, centerX + margin);
       var endY = min(frame.height, centerY + margin);
 
-      /// Accelerometer
-
+      /// make to string for sending
       var dataPng = encodePng(image);
       var dataString = dataPng.toString();
 
-      /// make to string for sending
-
       var hit = Hit();
       hit.frameContent = dataString;
-      hit.timestamp = AllSensorsHelper
-          .locationHelper.location?.timestamp; //frame.timestamp;
+      hit.timestamp = frame.timestamp;
       hit.latitude = AllSensorsHelper.locationHelper.location?.latitude;
       hit.longitude = AllSensorsHelper.locationHelper.location?.longitude;
       hit.altitude = AllSensorsHelper.locationHelper.location?.altitude;
       hit.accuracy = AllSensorsHelper.locationHelper.location?.accuracy;
+
+      /// dart does not return the equivalent of the original LocationHelper.location?.provider
       //hit.provider = LocationHelper.location?.provider
       hit.width = frame.width;
       hit.height = frame.height;
@@ -59,15 +58,17 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
       hit.maxValue = _frameResult.max;
 
       if (calibration is OldCalibrationResult) {
-        hit.blackThreshold = _calibration.blackThreshhold;
+        hit.blackThreshold = _calibration.blackThreshold;
       }
       hit.average = _frameResult.avg.toDouble();
       hit.blacksPercentage = _frameResult.blacksPercentage;
       hit.ax = AllSensorsHelper.accHelper.accelerometerValues.x;
       hit.ay = AllSensorsHelper.accHelper.accelerometerValues.y;
       hit.az = AllSensorsHelper.accHelper.accelerometerValues.z;
-      hit.temperature =
-          null; // too hardware dependant need feedback to if we are cutting it
+      hit.temperature = null;
+
+      /// ambient temp too hardware dependant maybe the battery package does have a temp measurement ?
+      /// TODO check battery package to get temperature
       print('found a hit');
       print(DateTime.now());
       return hit;

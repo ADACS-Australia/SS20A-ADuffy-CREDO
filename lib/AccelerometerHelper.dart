@@ -6,33 +6,32 @@ class AccelerometerHelper {
 
   AccelerometerEvent accelerometerValues;
 
-  ///should this have a default?
   bool accelerometerState = false;
 
+  /// initializes the accelerometer stream
   init() {
     _streamSubscriptions =
         accelerometerEvents.listen((AccelerometerEvent event) {
       accelerometerValues = event;
-      //print(event);
     });
   }
 
+  /// toggle accelerometer on and off
   toggleAccelerometerValues() {
-    //print(accelerometerState);
     if (accelerometerState == false) {
       init();
       accelerometerState = true;
-
-      //return accelerometerValues;
     } else {
       dispose();
     }
   }
 
+  /// grants access to x,y,z values
   getAccelerometerValues() {
     return accelerometerValues;
   }
 
+  /// ends and disposes of stream
   void dispose() {
     _streamSubscriptions.cancel();
 

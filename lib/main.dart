@@ -1,8 +1,5 @@
 import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:credo_transcript/CameraHelper.dart';
-import 'dart:ffi';
-import 'package:geolocator/geolocator.dart';
 import 'FileUtils.dart';
 
 Future<void> main() async {
@@ -11,6 +8,8 @@ Future<void> main() async {
   );
 }
 
+/// Flutter operates int he form of widgets that get build
+/// and if they have states update their states when prompted.
 class CredoHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,39 +36,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //CameraController _controller;
-  bool _cameraInitialized = false;
-  Position _currentPosition;
+  bool _detectorInitialized = false;
   var accelerometerValues;
   String fileContents = "No Data";
-
-  // init state and tell it to initialize camera
 
   @override
   void initState() {
     super.initState();
   }
 
+  ///we create an instance of all sensors helper here as well as
+  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
   var helper = AllSensorsHelper();
-  //var cameraHelper = CameraHelper();
-  Stopwatch stopwatch = new Stopwatch();
 
   _initializeDetector() {
-    if (_cameraInitialized == false) {
+    if (_detectorInitialized == false) {
       helper.startAllSensors();
-      stopwatch.start();
-      _cameraInitialized = true;
+
+      _detectorInitialized = true;
     } else {
       helper.stopAllSensors();
-      stopwatch.stop();
-      _cameraInitialized = false;
+
+      _detectorInitialized = false;
     }
-    //print(SensorHelper().accelerometerState);
   }
 
-  /// make new button with the sole function to get and update accelerometerValues
-
-  // makes the layout
+  /// this block describes the layout that the user can interact with.
+  /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
+  /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             RaisedButton(
               onPressed: _initializeDetector,
-              child: const Text('Get Location', style: TextStyle(fontSize: 20)),
+              child:
+                  const Text('Toggle Detector', style: TextStyle(fontSize: 20)),
             ),
             Text("$accelerometerValues"),
             RaisedButton(
@@ -100,13 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Text(fileContents),
-
-            //RaisedButton(
-            //  onPressed: print('object'), //cameraHelper.toggleCamera(),
-            //  child: const Text('START Image Stream',
-            //      style: TextStyle(fontSize: 20)),
-            //),
-            //Text("_ means can't read"),
           ],
         ),
       ),

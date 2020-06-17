@@ -1,28 +1,25 @@
 import 'package:sensors/sensors.dart';
 import 'dart:async';
 
+/// class for initializing, stopping a gyroscope stream and querying its values
+
 class GyroscopeHelper {
   StreamSubscription _streamSubscriptions;
 
   GyroscopeEvent gyroscopeValues;
 
-  ///should this have a default?
   bool gyroscopeState = false;
 
   init() {
     _streamSubscriptions = gyroscopeEvents.listen((GyroscopeEvent event) {
       gyroscopeValues = event;
-      //print(event);
     });
   }
 
   toggleGyroscopeValues() {
-    //print(gyroscopeState);
     if (gyroscopeState == false) {
       init();
       gyroscopeState = true;
-
-      //return accelerometerValues;
     } else {
       dispose();
     }

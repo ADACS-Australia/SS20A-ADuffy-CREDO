@@ -6,4 +6,5 @@ abstract class BaseFrameAnalyzer {
   checkHit(Frame frame, BaseFrameResult frameresult,
       BaseCalibrationResult calibration);
 }
-// TO DO: function bitmap2png function --> neccecary ? how are we sending things
+
+/// TODO: function bitmap2png still necessary? Dart comes with a 'to png' function already
