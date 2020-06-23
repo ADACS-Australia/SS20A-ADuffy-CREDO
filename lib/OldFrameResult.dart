@@ -11,27 +11,17 @@ class OldFrameResult extends BaseFrameResult {
   int max;
   int maxIndex;
 
-  calculateFrame(CameraImage image_processing, var blackThreshold) {
-    var height = image_processing.height;
-    var width = image_processing.width;
-
-    /// Dart automatically works and converts to rgb regardless of operating system.
-    /// Each band is stored in a plane the order of planes is  "r g b a"
-    /// https://pub.dev/documentation/camera/latest/camera/Plane-class.html
-    /// currently we are just passing the red plane through
-    /// TODO: check whether only passing the red plane would cause issues
-    var planes = image_processing.planes;
-    print(planes.length);
-    var b = planes[0].bytes; // unit8list
-    int size = width * height;
+  calculateFrame(CameraImage imageProcessing, var blackThreshold) {
+    // unit8list - and we only care about the Y plane which is plane 0
+    var data = imageProcessing.planes[0].bytes;
 
     int sum = 0;
     max = 0;
     maxIndex = 0;
     int blacks = 0;
 
-    for (int i = 0; i < size; ++i) {
-      int bb = b[i];
+    for (int i = 0; i < data.length; i++) {
+      var bb = data[i].toUnsigned(8);
       if (bb > 0) {
         sum += bb;
         if (bb > max) {
@@ -44,8 +34,8 @@ class OldFrameResult extends BaseFrameResult {
       }
     }
 
-    avg = sum ~/ size;
-    blacksPercentage = ((blacks * 10000) / size) / 100;
+    avg = sum ~/ data.length;
+    blacksPercentage = ((blacks * 10000) / data.length) / 100;
   }
 
   @override
