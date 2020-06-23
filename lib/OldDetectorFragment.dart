@@ -21,6 +21,8 @@ Future<dynamic> processImageFrame(
   OldFrameResult frame_result = new OldFrameResult();
   frame_result.calculateFrame(image_processing, blackThreshold);
 
+  ///possible issue within frame_result?
+
   //calibrate_next_frame(avg, max, blacksPercentageSum);
 
   var _isCovered = frame_result.isCovered(
@@ -39,7 +41,9 @@ Future<dynamic> processImageFrame(
       /// convert image-processing into a frame
 
       Frame frameProcessing = new Frame();
-      frameProcessing.byteArray = image_processing;
+      frameProcessing.byteArray = image_processing; //.planes[0].bytes;
+
+      /// not actually in byte array format !
       frameProcessing.width = image_processing.width;
       frameProcessing.height = image_processing.height;
       frameProcessing.exposureTime = null;

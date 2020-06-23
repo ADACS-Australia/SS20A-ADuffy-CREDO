@@ -21,6 +21,7 @@ class OldFrameResult extends BaseFrameResult {
     /// currently we are just passing the red plane through
     /// TODO: check whether only passing the red plane would cause issues
     var planes = image_processing.planes;
+    print(planes.length);
     var b = planes[0].bytes; // unit8list
     int size = width * height;
 

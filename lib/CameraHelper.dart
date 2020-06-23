@@ -16,7 +16,8 @@ class CameraHelper {
       ///waits for camera controller to be initialized before starting stream
       int frame_number = 0;
       // start camera stream
-      await _controller.startImageStream((CameraImage image) =>
+      await _controller.startImageStream((CameraImage
+              image) => // CameraImage might be the wrong type to use here ??
           processImageFrame(image, frame_number, blackThreshold));
 
       /// stream of images is directly passed to processing/calibration (see OldDetectorFragment.dart)
