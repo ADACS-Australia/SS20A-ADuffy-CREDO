@@ -1,9 +1,6 @@
+import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'dart:ffi';
-import 'package:geolocator/geolocator.dart';
-import 'package:sensors/sensors.dart';
-import 'OldDetectorFragment.dart';
+import 'FileUtils.dart';
 
 Future<void> main() async {
   runApp(
@@ -11,6 +8,8 @@ Future<void> main() async {
   );
 }
 
+/// Flutter operates int he form of widgets that get build
+/// and if they have states update their states when prompted.
 class CredoHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,70 +36,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  CameraController _controller;
-  bool _cameraInitialized = false;
-  Position _currentPosition;
-
-  // init state and tell it to initialize camera
+  bool _detectorInitialized = false;
+  var accelerometerValues;
+  String fileContents = "No Data";
 
   @override
   void initState() {
     super.initState();
-    //accelerometerEvents.listen((AccelerometerEvent event) {
-    //print(event);
-    //});
-
-    // _initializeCamera(); // initializes to early if we want it on button pressed
-    // does this mean i do not need to initialize camera again in the streaming void function ?
   }
 
-// defiine init camera  as async function (use void)
-  void _initializeCamera() async {
-    List<CameraDescription> cameras = await availableCameras();
-    int black_threshhold = 40;
+  ///we create an instance of all sensors helper here as well as
+  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
+  var helper = AllSensorsHelper();
 
-    //need to find out what the required resolution needs to be
-    // if the camera is also meant to preview then set to low
-    //shouldn't need to preview these images
-    _controller = CameraController(cameras[0], ResolutionPreset.medium);
-    _controller.initialize().then((_) async {
-      _cameraInitialized = true;
-      int frame_number = 0;
-      // start camera stream
-      await _controller // needs CameraInfo checks for orientation etc.
-          .startImageStream((CameraImage image) =>
-              processImageFrame(image, frame_number, black_threshhold));
+  _initializeDetector() {
+    if (_detectorInitialized == false) {
+      helper.startAllSensors();
 
-      setState(() {
-        _cameraInitialized;
-      });
-    });
+      _detectorInitialized = true;
+    } else {
+      helper.stopAllSensors();
+
+      _detectorInitialized = false;
+    }
   }
 
-  // dispose and deactivate camera
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  // Get course location
-  _getCurrentLocation() {
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-
-    geolocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-        //print(_currentPosition);
-      });
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  // makes the layout
+  /// this block describes the layout that the user can interact with.
+  /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
+  /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,16 +78,23 @@ class _MyHomePageState extends State<MyHomePage> {
               'Placeholder for image',
             ),
             RaisedButton(
-              onPressed: _getCurrentLocation,
-              child: const Text('Get Location', style: TextStyle(fontSize: 20)),
+              onPressed: _initializeDetector,
+              child:
+                  const Text('Toggle Detector', style: TextStyle(fontSize: 20)),
             ),
-            Text("$_currentPosition"),
+            Text("$accelerometerValues"),
             RaisedButton(
-              onPressed: _initializeCamera,
-              child: const Text('START Image Stream',
-                  style: TextStyle(fontSize: 20)),
+              child: Text("Read From File"),
+              onPressed: () {
+                FileUtils.readFromFile().then((contents) {
+                  print(contents);
+                  setState(() {
+                    fileContents = contents;
+                  });
+                });
+              },
             ),
-            Text("$_cameraInitialized"),
+            Text(fileContents),
           ],
         ),
       ),

@@ -1,11 +1,15 @@
-import 'dart:typed_data';
+import 'package:credo_transcript/Frame.dart';
+import 'package:credo_transcript/OldCalibrationResult.dart';
+import 'OldFrameAnalyzer.dart';
 import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
-import 'package:image/image.dart';
+import 'OldFrameResult.dart';
+import 'Hit.dart';
+import 'FileUtils.dart';
 
-var calibrationResult = null;
+var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
+OldCalibrationFinder calibrationFinder = OldCalibrationFinder();
 
 // void function that calls on activate camera and starts image stream
 // will also need funtionality to connect to server
@@ -14,118 +18,49 @@ Future<dynamic> processImageFrame(
   // uses appv2 for
   start_frame++;
 
-  var height = image_processing.height;
-  var width = image_processing.width;
-  // order is r g b a
-  var planes = image_processing.planes;
-  var b = planes[0].bytes; // unit8list
-  int size = width * height;
-  //jbyte *b = (*env)->GetByteArrayElements(env, bytes, JNI_FALSE);
-  //jbyte *address = b;
-  int sum = 0;
-  int max = 0;
-  int maxIndex = 0;
-  int blacks = 0;
-  for (int i = 0; i < size; ++i) {
-    int bb = b[i];
-    //bb = bb & 0xff; // no longer needed as the is already a unit 8 list and won't allow input bigger then 255
-    if (bb > 0) {
-      sum += bb;
-      if (bb > max) {
-        max = bb;
-        maxIndex = i;
-      }
-    }
-    if (bb < blackThreshold) {
-      ++blacks;
-    }
-  }
-  // needs to format and return values for assertaining a hit
-  //print('$height,$width');
-  //var returns = [sum / size, blacks, size, max, maxIndex];
+  OldFrameResult frame_result = new OldFrameResult();
+  frame_result.calculateFrame(image_processing, blackThreshold);
 
-  var avg = sum / size;
-  var blacksPercentage = ((blacks * 10000) / size) / 100;
-  // changes made so it now goes straight to calibration
-  // calls calibration function
+  ///possible issue within frame_result?
 
   //calibrate_next_frame(avg, max, blacksPercentageSum);
-  var _isCovered = isCovered(avg, calibrationResult, blacksPercentage);
 
-  if (isCovered(35, null, 99.9) == true) {
+  var _isCovered = frame_result.isCovered(
+      calibrationResult); //frame_result.isCovered(calibrationResult);
+
+  if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage
     if (calibrationResult == null) {
-      calibrationResult = calibrate_next_frame(avg, max, blacksPercentage)[0];
-      print("$calibrationResult");
-      var progress = counter.toDouble() / CALIBRATION_LENGHT * 100;
+      calibrationResult = calibrationFinder.calibrateNextFrame(frame_result);
+      //print("$calibrationResult");
+      var progress = calibrationFinder.counter /
+          OldCalibrationFinder.CALIBRATION_LENGHT *
+          100;
       print("calibration progress $progress %");
     } else {
-      print('checking for hits');
-      //var hit = checkHit()
+      /// convert image-processing into a frame
+
+      Frame frameProcessing = new Frame();
+      frameProcessing.byteArray = image_processing; //.planes[0].bytes;
+
+      /// not actually in byte array format !
+      frameProcessing.width = image_processing.width;
+      frameProcessing.height = image_processing.height;
+      frameProcessing.exposureTime = null;
+      frameProcessing.imageFormat = null;
+      frameProcessing.timestamp = new DateTime.now();
+
+      Hit hit = (OldFrameAnalyzer())
+          .checkHit(frameProcessing, frame_result, calibrationResult);
+      //print('$hit');
+      if (hit != null) {
+        FileUtils.saveToFile(
+            hit.toString() + ' ' + frameProcessing.timestamp.toString() + '\n');
+      }
     }
   } else {
     print("not covered");
   }
 
   return;
-}
-
-testing() {
-  List<int> input = [111, 232, 135, 134, 95, 186, 157, 98, 139];
-  var size = 9;
-  var b = Uint8List.fromList(input);
-  int sum = 0;
-  int max = 0;
-  int maxIndex = 0;
-  int blacks = 0;
-  for (int i = 0; i < size; ++i) {
-    int bb = b[i];
-    print('$bb');
-    //bb = bb & 0xff; // no longer needed as the is already a unit 8 list and won't allow input bigger then 255
-    if (bb > 0) {
-      sum += bb;
-      print('$sum');
-      if (bb > max) {
-        max = bb;
-        maxIndex = i;
-      }
-    }
-  }
-  //var returns = [sum / size, blacks, size, max, maxIndex]; // what kotlin.c used to return
-
-  var avg = sum / size;
-  var blacksPercentage = ((blacks * 10000) / size) / 100;
-  // changes made so it now goes straight to calibration
-  // calls calibration function
-
-  //calibrate_next_frame(avg, max, blacksPercentageSum);
-  var _isCovered = isCovered(avg, calibrationResult, blacksPercentage);
-
-  if (isCovered(35, null, 99.9) == true) {
-    //isCovered(avg, calibrationResult, blacksPercentage
-    if (calibrationResult == null) {
-      var calibrationResult =
-          calibrate_next_frame(avg, max, blacksPercentage)[0];
-      print("$calibrationResult");
-      var progress = counter.toDouble() / CALIBRATION_LENGHT * 100;
-      print("calibration progress $progress %");
-    } else {
-      print('checking for hits');
-      //var hit = checkHit()
-    }
-  } else {
-    print("not covered");
-  }
-  return;
-}
-
-isCovered(frame_avg, calibrationResultAvg, blacksPercentage) {
-  var statement_input = calibrationResultAvg ?? DEFAULT_BLACK_THRESHOLD;
-  if (frame_avg < statement_input && blacksPercentage >= 99.9) {
-    print("TRUE ... is covered");
-    return true;
-  } else {
-    print("FALSE");
-    return false;
-  }
 }
