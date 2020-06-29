@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'BaseFrameResult.dart';
 import 'BaseCalibrationResult.dart';
 import 'OldCalibrationResult.dart';
@@ -7,52 +9,68 @@ import 'package:camera/camera.dart';
 
 class Camera2FrameResult extends BaseFrameResult {
   var bytes;
-  int width;
-  int height;
+  //int width;
+  //int height;
   int scaledWidth;
   int scaledHeight;
   int pixelPrecision;
   // TODO make sure all these are initialized appropriately
 
-  calculateFrame(CameraImage imageProcessing, var blackThreshold) {
-    int sum = 0;
-    int max = 0;
-    int maxIndex = 0;
+  var avg;
+  int sum;
+  int max;
+  int maxIndex;
 
-    int scaleFactorWidth = width ~/ scaledWidth;
-    int scaleFactorHeight = height ~/ scaledHeight;
+  calculateFrame(CameraImage imageProcessing, var blackThreshold) {
+    sum = 0;
+    max = 0;
+    maxIndex = 0;
+
+    /// these all need to be changed
+    scaledWidth = 0;
+    scaledHeight = 0;
+    pixelPrecision = 0;
+
+    int scaleFactorWidth = imageProcessing.width ~/ scaledWidth;
+    int scaleFactorHeight = imageProcessing.height ~/ scaledHeight;
     int scale = scaleFactorWidth * scaleFactorHeight;
     int scaledFrameSize = scaledWidth * scaledHeight;
 
-    //int * scaledFrame= (int *)(malloc((sizeof(int))*scaledFrameSize));
-    var scaledFrame;
+    var scaledFrame = Uint8List(4 * scaledFrameSize);
 
-    /// should be a list of memory size as stuff gets written into it?
-    var b = 111; //(*env)->GetByteArrayElements(env, bytes, JNI_FALSE);
-    var address = b; // TODO needs a better deifinition of b!!
+    // unit8list - and we only care about the Y plane which is plane 0
+    var b = imageProcessing.planes[0].bytes;
+    // var address = b; // TODO is adress needed at all ??
 
-    for (int r = 0; r < height; ++r) {
-      int indexRow = r * width * pixelPrecision;
+    for (int r = 0; r < imageProcessing.height; ++r) {
+      int indexRow = r * imageProcessing.width * pixelPrecision;
       int scaledIndexRow = r ~/ scaleFactorHeight * scaledWidth;
       int c = 0;
-      while (c < width * pixelPrecision) {
+      while (c < imageProcessing.width * pixelPrecision) {
         int index = indexRow + c;
         int resultIndex = scaledIndexRow +
             c / pixelPrecision ~/ scaleFactorWidth; //double check this equation
-        int byteValue = (b + index); // & 0xff;
+        int byteValue = (b[r] + index);
+
+        /// does not do what i think it should do
         scaledFrame[resultIndex] = scaledFrame[resultIndex] + byteValue;
         c += pixelPrecision;
       }
     }
 
     for (int i = 0; i < scaledFrameSize; ++i) {
-      int virtualPixelValue = scaledFrame[i] / scale;
+      int virtualPixelValue = scaledFrame[i] ~/ scale;
       sum += virtualPixelValue;
       if (virtualPixelValue > max) {
         max = virtualPixelValue;
         maxIndex = i;
       }
     }
+
+    avg = sum / scaledFrameSize;
+
+    var results = [avg, max, maxIndex];
+    return results;
   }
 
   @override
