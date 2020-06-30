@@ -4,6 +4,7 @@ import 'BaseFrameResult.dart';
 import 'BaseCalibrationResult.dart';
 import 'OldCalibrationResult.dart';
 import 'package:camera/camera.dart';
+import 'RawFormatCalibrationResult.dart';
 
 /// The code in this file is a direct adaptation from kotlin-jini.c in the original project code
 
@@ -50,7 +51,7 @@ class Camera2FrameResult extends BaseFrameResult {
         int index = indexRow + c;
         int resultIndex = scaledIndexRow +
             c / pixelPrecision ~/ scaleFactorWidth; //double check this equation
-        int byteValue = (b[r] + index);
+        int byteValue = b[index] & 0xff;
 
         /// does not do what i think it should do
         scaledFrame[resultIndex] = scaledFrame[resultIndex] + byteValue;
@@ -75,7 +76,11 @@ class Camera2FrameResult extends BaseFrameResult {
 
   @override
   isCovered(BaseCalibrationResult calibrationResult) {
-    // TODO: implement isCovered
-    throw UnimplementedError();
+    //TODO needs to be nullable !
+    if (calibrationResult is RawFormatCalibrationResult) {
+      return avg < RawFormatCalibrationResult.DEFAULT_NOISE_THRESHOLD;
+    } else {
+      throw UnimplementedError;
+    }
   }
 }
