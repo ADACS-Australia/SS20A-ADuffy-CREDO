@@ -10,7 +10,6 @@ class RawFormatCalibrationResult extends BaseCalibrationResult {
   static const AMPLIFIER = 1.10;
   static const DEFAULT_NOISE_THRESHOLD = 10; // const vs final ?
 
-  // threshholdQueue --> static list TODO look up static lists
   var thresholdQueue =
       Queue(); // is a linkedList in the original code but dart complains
   // did not make it a double linked queue as you only add to the front and remove from the back so queue is sufficient

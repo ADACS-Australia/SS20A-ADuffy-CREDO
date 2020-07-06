@@ -4,12 +4,16 @@
 
 import 'package:camera/camera.dart';
 import 'Frame.dart';
+import 'Camera2FrameResult.dart';
+import 'RawFormatCalibrationFinder.dart';
 
-Future<dynamic> processImageFrame(CameraImage image_processing,
-    var processingMethod, var blackThreshold) async {
+var calibrationFinder = RawFormatCalibrationFinder();
+
+Future<dynamic> processImageFrame(
+    CameraImage image_processing, var processingMethod) async {
   // should Frame be passed in rather then CameraImage as in the original code??
 
-  var frameResult;
+  var calibrationResult;
 
   switch (processingMethod) {
     case 'official':
@@ -21,6 +25,16 @@ Future<dynamic> processImageFrame(CameraImage image_processing,
     case 'experimental':
       {
         //statements;
+        Camera2FrameResult camera2frameResult;
+        camera2frameResult.calculateFrame(image_processing);
+        var _isCovered = camera2frameResult.isCovered(calibrationResult);
+
+        if (_isCovered == true) {
+          if (calibrationResult == null) {
+            calibrationResult =
+                calibrationFinder.onFrameRecieved(camera2frameResult);
+          } else {}
+        }
       }
       break;
 

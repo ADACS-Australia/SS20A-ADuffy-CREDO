@@ -22,7 +22,7 @@ class Camera2FrameResult extends BaseFrameResult {
   int max;
   int maxIndex;
 
-  calculateFrame(CameraImage imageProcessing, var blackThreshold) {
+  calculateFrame(CameraImage imageProcessing) {
     sum = 0;
     max = 0;
     maxIndex = 0;
@@ -76,7 +76,12 @@ class Camera2FrameResult extends BaseFrameResult {
 
   @override
   isCovered(BaseCalibrationResult calibrationResult) {
-    //TODO needs to be nullable !
+    // if statement is a work around to allow it to be nullable
+    if (!(calibrationResult is RawFormatCalibrationResult) &&
+        (calibrationResult != null)) {
+      ///TODO: throw Exception("Screen not covered");
+    }
+
     if (calibrationResult is RawFormatCalibrationResult) {
       return avg < RawFormatCalibrationResult.DEFAULT_NOISE_THRESHOLD;
     } else {

@@ -11,9 +11,10 @@ import 'OldCalibrationResult.dart';
 import 'package:image/image.dart';
 import 'main.dart';
 import 'package:sensors/sensors.dart';
+import 'package:camera/camera.dart';
 
 class OldFrameAnalyzer extends BaseFrameAnalyzer {
-  final HIT_BITMAP_SIZE = 60;
+  static const HIT_BITMAP_SIZE = 60;
 
   @override
   Hit checkHit(Frame frame, BaseFrameResult frameResult,
@@ -22,7 +23,11 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
     OldCalibrationResult _calibration = calibration;
     var _max = _calibration.max;
 
-    Image image;
+    Image
+        image; // TODO instead of passing the frame in can i just pass the cameraImage?
+    /// what can be done is take image from image stream and while converting
+    /// from yuv to rgb write it into an empty Image which can hen be encoded.
+    /// unsure if that would help at all with cropping images though .....
 
     print(_frameResult.max);
     print(_max);
@@ -41,7 +46,8 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
       var endY = min(frame.height, centerY + margin);
 
       /// make to string for sending
-      var dataPng = encodePng(image);
+      var dataPng =
+          encodePng(image); // TODO make a proper image to feed to function
       var dataString = dataPng.toString();
 
       var hit = Hit();
