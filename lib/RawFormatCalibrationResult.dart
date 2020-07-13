@@ -7,8 +7,9 @@ class RawFormatCalibrationResult extends BaseCalibrationResult {
   int detectionThreshold;
   int calibrationNoise;
 
-  static const AMPLIFIER = 1.10;
-  static const DEFAULT_NOISE_THRESHOLD = 10; // const vs final ?
+  final AMPLIFIER =
+      1.10; // can't be static const as i need to query it during calibration
+  static const DEFAULT_NOISE_THRESHOLD = 10;
 
   var thresholdQueue =
       Queue(); // is a linkedList in the original code but dart complains

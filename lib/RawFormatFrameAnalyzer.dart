@@ -34,7 +34,7 @@ class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
       var endX = min(frame.width, centerX + margin);
       var endY = min(frame.height, centerY + margin);
 
-      var bitmap = ImageBitmap; //TODO fix bitmap
+      var bitmap = ImageBitmap; //TODO fix bitmap convert to rgb and image here
 
       var scaledWidth = frame.width / _calibration.clusterFactorWidth;
       var x = _frameResult.maxIndex % scaledWidth;

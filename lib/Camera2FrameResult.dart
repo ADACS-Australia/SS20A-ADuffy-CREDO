@@ -9,9 +9,9 @@ import 'RawFormatCalibrationResult.dart';
 /// The code in this file is a direct adaptation from kotlin-jini.c in the original project code
 
 class Camera2FrameResult extends BaseFrameResult {
-  var bytes;
-  //int width;
-  //int height;
+  var bytes; // still needs writing into
+  int originalWidth;
+  int originalHeight;
   int scaledWidth;
   int scaledHeight;
   int pixelPrecision;
@@ -26,6 +26,9 @@ class Camera2FrameResult extends BaseFrameResult {
     sum = 0;
     max = 0;
     maxIndex = 0;
+
+    originalWidth = imageProcessing.width;
+    originalHeight = imageProcessing.height;
 
     /// these all need to be changed
     scaledWidth = 0;

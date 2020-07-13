@@ -24,11 +24,12 @@ Future<dynamic> processImageFrame(
 
     case 'experimental':
       {
-        //statements;
+        //statements if method is experimental;
         Camera2FrameResult camera2frameResult;
         camera2frameResult.calculateFrame(image_processing);
         var _isCovered = camera2frameResult.isCovered(calibrationResult);
 
+        // calibrate the camera if it is covered and it hasn't been calibrated yet
         if (_isCovered == true) {
           if (calibrationResult == null) {
             calibrationResult =
