@@ -73,6 +73,8 @@ class RawFormatCalibrationFinder {
     }
   }
 
+  /// The function should create everything for the calibration results.
+
   changeClusterFactors(Camera2FrameResult frameResult) {
     // As we have no configuration settings configuration.width and .height are replaced by frameResult original width and height
 

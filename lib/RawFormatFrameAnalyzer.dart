@@ -10,12 +10,19 @@ import 'package:credo_transcript/RawFormatCalibrationResult.dart';
 import 'OldFrameAnalyzer.dart';
 import 'dart:math';
 import 'AllSensorsHelper.dart';
-import 'OldCalibrationResult.dart';
+import 'YUVToRGBConverter.dart';
+import 'package:camera/camera.dart';
+import 'package:image/image.dart' as Img;
 
 class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
+  YUVToRGBConverter colourConverter;
   @override
+
+  /// checkHit checks if hit conditions are met and then egts the data ready to be send
+  /// becasue of the yuv to rgb conversion we need to pass it the original image.
+  /// image could potentially replace frame all together but we kept frame from the original code
   Hit checkHit(Frame frame, BaseFrameResult frameResult,
-      BaseCalibrationResult calibration) {
+      BaseCalibrationResult calibration, CameraImage image) {
     Camera2FrameResult _frameResult = frameResult;
     RawFormatCalibrationResult _calibration = calibration;
     var maxValue = _calibration.detectionThreshold;
@@ -34,17 +41,21 @@ class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
       var endX = min(frame.width, centerX + margin);
       var endY = min(frame.height, centerY + margin);
 
-      var bitmap = ImageBitmap; //TODO fix bitmap convert to rgb and image here
+      // converts to RGB and into an image from the image.dart library to encode into png
+      Img.Image bitmap = colourConverter.convertYUV420toImageColor(image);
 
       var scaledWidth = frame.width / _calibration.clusterFactorWidth;
       var x = _frameResult.maxIndex % scaledWidth;
-      var y = _frameResult.maxIndex / scaledWidth;
+      int y = _frameResult.maxIndex ~/
+          scaledWidth; // changed to int for later operations
 
       var croppedSize = 70;
-      var startRow = (y * _calibration.clusterFactorHeight) - (croppedSize / 2);
-      var startColumn = (x * _calibration.clusterFactorWidth) -
-          (croppedSize / 2); // do these need to be ints ?
-
+      var startRow =
+          (y * _calibration.clusterFactorHeight) - (croppedSize ~/ 2);
+      var startColumn = (x.toInt() * _calibration.clusterFactorWidth) -
+          (croppedSize ~/ 2); // changed x to int so that start column is an int
+      /// startRow and start colum need to be integers
+      /// changed x and y to be integers rather then rounding at a later point in time
       if (startColumn + croppedSize > bitmap.width) {
         startColumn = bitmap.width - croppedSize;
       }
@@ -58,9 +69,15 @@ class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
         startRow = 0;
       }
 
-// TODO fix bitmap to png
-      //val cropDataPNG = bitmap2png(croppedBitmap)
-      //val dataString = Base64.encodeToString(cropDataPNG, Base64.DEFAULT)
+      Img.Image croppedImage = Img.copyCrop(
+          bitmap,
+          startColumn,
+          startRow,
+          bitmap.width,
+          bitmap.height); //cropping the image to startRow and Start Column size
+      // TODO check that the image gets cropped correctly as there is no documentation on the function
+      var imagePng = Img.encodePng(croppedImage);
+      var dataString = imagePng.toString();
 
       var hit = Hit();
       hit.frameContent = dataString;

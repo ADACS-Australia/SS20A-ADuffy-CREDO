@@ -2,7 +2,9 @@ import 'package:image/image.dart';
 import 'package:camera/camera.dart';
 
 class YUVToRGBConverter {
-  Future<Image> convertYUV420toImageColor(CameraImage image) async {
+  //Future<Image> convertYUV420toImageColor(CameraImage image) async {
+  // changed from a future object to make querying image easier TODO needs to be tested!
+  convertYUV420toImageColor(CameraImage image) {
     // TODO should have a check in it to see if data is in yuv to start with otherwise just convert to Image
     try {
       final int width = image.width;
@@ -37,11 +39,6 @@ class YUVToRGBConverter {
           img.data[index] = (0xFF << 24) | (b << 16) | (g << 8) | r;
         }
       }
-
-      //PngEncoder pngEncoder = new PngEncoder(level: 0, filter: 0);
-      //List<int> png = pngEncoder.encodeImage(img);
-      //muteYUVProcessing = false;
-      //return Image.memory(png);
 
       /// returns just the Image which can then be encoded / cropped outside of this function
 

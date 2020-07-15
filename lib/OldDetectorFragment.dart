@@ -50,8 +50,8 @@ Future<dynamic> processImageFrame(
       frameProcessing.imageFormat = null;
       frameProcessing.timestamp = new DateTime.now();
 
-      Hit hit = (OldFrameAnalyzer())
-          .checkHit(frameProcessing, frame_result, calibrationResult);
+      Hit hit = (OldFrameAnalyzer()).checkHit(
+          frameProcessing, frame_result, calibrationResult, image_processing);
       //print('$hit');
       if (hit != null) {
         FileUtils.saveToFile(

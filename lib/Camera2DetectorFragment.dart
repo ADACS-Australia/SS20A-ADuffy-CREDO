@@ -11,8 +11,6 @@ var calibrationFinder = RawFormatCalibrationFinder();
 
 Future<dynamic> processImageFrame(
     CameraImage image_processing, var processingMethod) async {
-  // should Frame be passed in rather then CameraImage as in the original code??
-
   var calibrationResult;
 
   switch (processingMethod) {
@@ -27,24 +25,24 @@ Future<dynamic> processImageFrame(
         //statements if method is experimental;
         Camera2FrameResult camera2frameResult;
         camera2frameResult.calculateFrame(image_processing);
-        var _isCovered = camera2frameResult.isCovered(calibrationResult);
+        //var _isCovered = camera2frameResult.isCovered(calibrationResult);
 
-        // calibrate the camera if it is covered and it hasn't been calibrated yet
-        if (_isCovered == true) {
-          if (calibrationResult == null) {
-            calibrationResult =
-                calibrationFinder.onFrameRecieved(camera2frameResult);
-          } else {}
-        }
-      }
-      break;
-
-    default:
-      {
-        //statements;
+        //// calibrate the camera if it is covered and it hasn't been calibrated yet
+        //if (_isCovered == true) {
+        //  if (calibrationResult == null) {
+        //    // it runs the old calibration first and only then will it use the raw frame procesing to recaibrate??
+        //    calibrationResult =
+        //        calibrationFinder.onFrameRecieved(camera2frameResult);
+        //} else {}
+        //}
       }
       break;
   }
+
+  /// The original code uses the old calibration method originally.
+  /// Regardless of whether or not the method is set to EXPERIMENTAL.
+  /// then after the initial calibration (i.e calibrationResult no longer null)
+  /// It recalibrates then for every frame as long as the method is set to experimental ????
 
   //var _isCovered = frameResult.isCovered(
   //    calibrationResult); //frameResult.isCovered(calibrationResult);
