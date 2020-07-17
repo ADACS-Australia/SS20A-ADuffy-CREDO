@@ -26,7 +26,8 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
     print(_max);
 
     /// conditionals to qualify as a hit
-    if (_frameResult.max > _max) {
+    if (_frameResult.max < _max) {
+      // swapped sign for testing
       var margin = HIT_BITMAP_SIZE / 2;
       int centerX =
           _frameResult.maxIndex % frame.width; // % calculates the remainder
