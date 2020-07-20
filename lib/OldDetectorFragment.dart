@@ -18,18 +18,19 @@ Future<dynamic> processImageFrame(
   // uses appv2 for
   start_frame++;
 
+  /// calculate frame values
   OldFrameResult frame_result = new OldFrameResult();
   frame_result.calculateFrame(image_processing, blackThreshold);
 
-  ///possible issue within frame_result?
-
+  /// check if image is dark enough
   //calibrate_next_frame(avg, max, blacksPercentageSum);
-
+  print(frame_result.max);
   var _isCovered = frame_result.isCovered(
       calibrationResult); //frame_result.isCovered(calibrationResult);
 
   if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage
+    ///if calibration has not been run run calibration
     if (calibrationResult == null) {
       calibrationResult = calibrationFinder.calibrateNextFrame(frame_result);
       //print("$calibrationResult");
@@ -50,8 +51,8 @@ Future<dynamic> processImageFrame(
       frameProcessing.imageFormat = null;
       frameProcessing.timestamp = new DateTime.now();
 
-      Hit hit = (OldFrameAnalyzer())
-          .checkHit(frameProcessing, frame_result, calibrationResult);
+      Hit hit = (OldFrameAnalyzer()).checkHit(
+          frameProcessing, frame_result, calibrationResult, image_processing);
       //print('$hit');
       if (hit != null) {
         FileUtils.saveToFile(
