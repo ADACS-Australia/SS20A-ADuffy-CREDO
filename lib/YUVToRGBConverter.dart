@@ -17,7 +17,6 @@ class YUVToRGBConverter {
     if (image.format.raw == 1111970369) {
       //BGRA
       try {
-// for every row fill the columns
         // TODO double check that this reproduces the image correctly
         /// with the decodeImage function it should be possible to just pass it all bytes and
         /// it gets converted automatically (only works if no colour conversion is required ?!)
@@ -39,6 +38,7 @@ class YUVToRGBConverter {
         // Fill image buffer with plane[0] from YUV420_888
         for (int x = 0; x < width; x++) {
           for (int y = 0; y < height; y++) {
+            // for every row fill the columns
             final int uvIndex =
                 uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
             final int index = y * width + x;
