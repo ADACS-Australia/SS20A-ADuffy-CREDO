@@ -65,11 +65,11 @@ class CredoRepository{
 
     if(login.contains('@')){
       print("login by email");
-      // loginResponse =  await _apiClient.login(LoginByEmailRequest(login, password, _identityInfo));
+      loginResponse =  await _apiClient.login(LoginByEmailRequest(login, password, _identityInfo));
     }
     else {
       print("login by username");
-      // loginResponse =  await _apiClient.login(LoginByUsernameRequest(login, password, _identityInfo));
+      loginResponse =  await _apiClient.login(LoginByUsernameRequest(login, password, _identityInfo));
     }
 
     _token = loginResponse?.token;

@@ -21,6 +21,8 @@ class LoginByUsernameRequest extends LoginRequest {
     this.deviceModel = info.deviceModel;
     this.appVersion = info.appVersion;
     this.systemVersion = info.systemVersion;
+    this.deviceType = info.deviceType;
+
   }
 
   Map<String, dynamic> toJson() => {
@@ -29,7 +31,8 @@ class LoginByUsernameRequest extends LoginRequest {
     "device_id": deviceId,
     "device_model": deviceModel,
     "app_version": appVersion,
-    "system_version": systemVersion
+    "system_version": systemVersion,
+    "device_type": deviceType
   };
 }
 
@@ -43,14 +46,16 @@ class LoginByEmailRequest extends LoginRequest {
     this.deviceModel = info.deviceModel;
     this.appVersion = info.appVersion;
     this.systemVersion = info.systemVersion;
+    this.deviceType = info.deviceType;
   }
 
   Map<String, dynamic> toJson() => {
-    "usename": email,
+    "email": email,
     "password": password,
     "device_id": deviceId,
     "device_model": deviceModel,
     "app_version": appVersion,
-    "system_version": systemVersion
+    "system_version": systemVersion,
+    "device_type": deviceType
   };
 }
