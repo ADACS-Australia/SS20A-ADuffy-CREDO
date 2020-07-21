@@ -108,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
               child: Text("Login by Email"),
               onPressed: (){
-                 _credoRepository.requestLogin("eman@ehab", "email");
+                 _credoRepository.requestLogin("emanehab99@yahoo.com", "XQsHsm2q7HzevhH");
               },
             ),
           ],
