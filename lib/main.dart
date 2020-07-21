@@ -1,4 +1,6 @@
+
 import 'package:credo_transcript/AllSensorsHelper.dart';
+import 'package:credo_transcript/network/repository.dart';
 import 'package:flutter/material.dart';
 import 'FileUtils.dart';
 
@@ -39,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _detectorInitialized = false;
   var accelerometerValues;
   String fileContents = "No Data";
+  CredoRepository _credoRepository = CredoRepository();
 
   @override
   void initState() {
@@ -61,9 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+
   /// this block describes the layout that the user can interact with.
   /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
-  /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
+  /// to update things within the scaffold use setState (inherited f rom StatefullWidget) in functions to alert the app that changes are preselnt.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +99,18 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Text(fileContents),
+            RaisedButton(
+              child: Text("Login by Username"),
+              onPressed: (){
+                 _credoRepository.requestLogin("eman", "ehab");
+              },
+            ),
+            RaisedButton(
+              child: Text("Login by Email"),
+              onPressed: (){
+                 _credoRepository.requestLogin("eman@ehab", "email");
+              },
+            ),
           ],
         ),
       ),
