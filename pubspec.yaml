@@ -34,6 +34,7 @@ dependencies:
   package_info: ^0.4.1
   shared_preferences: 0.5.3+4
   
+  stats:
 
 dev_dependencies:
   flutter_test:
@@ -56,8 +57,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   #assets:
-  # - images/Users/lchevalier/Documents/AndroidStudio/DeviceExplorer/huawei-vky_l29-QYJ7N17B16001038/sdcard/Download/062018_Dimensions.png
-  #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -41,6 +41,8 @@ class OldCalibrationFinder {
       calibrationResult.avg = finalAvg.toInt();
       calibrationResult.max = finalMax.toInt();
 
+      print(oldFrameResult.max);
+
       return calibrationResult;
     } else {
       return null;
