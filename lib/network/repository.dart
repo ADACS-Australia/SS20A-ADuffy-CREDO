@@ -1,11 +1,15 @@
 import 'dart:io';
+
+import 'package:device_info/device_info.dart';
+import 'package:http/http.dart';
+import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:credo_transcript/models/identity_info.dart';
 import 'package:credo_transcript/models/login.dart';
 import 'package:credo_transcript/models/login_response.dart';
 import 'package:credo_transcript/network/rest_api_client.dart';
-import 'package:device_info/device_info.dart';
-import 'package:http/http.dart';
-import 'package:package_info/package_info.dart';
+import 'package:credo_transcript/utils/prefs.dart' as prefs;
 
 class CredoRepository{
 
@@ -16,6 +20,13 @@ class CredoRepository{
   IdentityInfo _identityInfo;
   String _token;
   RestApiClient _apiClient = RestApiClient(Client());
+
+  // SharedPereferences keys
+  final KEYS = {
+  "USER_LOGIN": "USER_LOGIN",
+  "USER_TOKEN": "USER_TOKEN",
+  "USER_PASSWORD": "USER_PASSWORD"
+  };
 
   Future<void> _getIdentityInfo() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -62,6 +73,15 @@ class CredoRepository{
     }
 
     _token = loginResponse?.token;
+
+    // Saving token, username and password in shared preferences 
+    if(_token != null){
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString(KEYS["USER_TOKEN"], _token);
+      prefs.setString(KEYS["USER_LOGIN"], loginResponse.username);
+      prefs.setString(KEYS["USER_PASSWORD"], password);
+    }
+
     print(_token);
   }
 
