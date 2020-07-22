@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:credo_transcript/models/login.dart';
 import 'package:http/http.dart';
 
-import '../Hit.dart';
+import '../models/detection.dart';
+import '../models/login.dart';
+import '../utils/prefs.dart';
 import '../models/login_response.dart';
 
 class  RestApiClient{
@@ -24,23 +24,30 @@ class  RestApiClient{
     if(response.statusCode != 200)
     {
       print(response.body);
-      throw new Exception('Cannot login! SOmething went wrong');
+      throw new Exception('Cannot login! Something went wrong');
     }
     
-
     final json = jsonDecode(response.body);
     return LoginResponse.fromJson(json);
   }
 
-  Future<void> sendHit(Hit hit, String token) async {
+  Future<void> sendHit(DetectionRequest detectionRequest) async {
+    String token = await Prefs.getPref(Prefs.USER_TOKEN);
+
     final response = await _client.post(
       "$_endpoint/detection",
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Token $token",
       },
-      body: jsonEncode(hit));
+      body: jsonEncode(detectionRequest));
 
+      if(response.statusCode != 200)
+    {
+      print(response.body);
+      throw new Exception('Cannot send hits! Something went wrong');
+    }
+    
   }
 
 }

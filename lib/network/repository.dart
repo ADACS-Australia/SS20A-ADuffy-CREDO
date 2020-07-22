@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:http/http.dart';
 import 'package:package_info/package_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:credo_transcript/models/identity_info.dart';
 import 'package:credo_transcript/models/login.dart';
 import 'package:credo_transcript/models/login_response.dart';
 import 'package:credo_transcript/network/rest_api_client.dart';
-import 'package:credo_transcript/utils/prefs.dart' as prefs;
+import 'package:credo_transcript/utils/prefs.dart';
+
 
 class CredoRepository{
 
@@ -20,13 +19,6 @@ class CredoRepository{
   IdentityInfo _identityInfo;
   String _token;
   RestApiClient _apiClient = RestApiClient(Client());
-
-  // SharedPereferences keys
-  final KEYS = {
-  "USER_LOGIN": "USER_LOGIN",
-  "USER_TOKEN": "USER_TOKEN",
-  "USER_PASSWORD": "USER_PASSWORD"
-  };
 
   Future<void> _getIdentityInfo() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -71,22 +63,25 @@ class CredoRepository{
       print("login by username");
       loginResponse =  await _apiClient.login(LoginByUsernameRequest(login, password, _identityInfo));
     }
-
+    print(loginResponse?.username);
     _token = loginResponse?.token;
 
     // Saving token, username and password in shared preferences 
     if(_token != null){
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString(KEYS["USER_TOKEN"], _token);
-      prefs.setString(KEYS["USER_LOGIN"], loginResponse.username);
-      prefs.setString(KEYS["USER_PASSWORD"], password);
+      Prefs.setPref(Prefs.USER_TOKEN, _token);
+      Prefs.setPref(Prefs.USER_LOGIN, loginResponse.username);
+      Prefs.setPref(Prefs.USER_PASSWORD, password);
     }
+    _printPrefs();
+  }
 
-    print(_token);
+  void _printPrefs()async{
+    print(await Prefs.getPref(Prefs.USER_TOKEN));
+    print(await Prefs.getPref(Prefs.USER_LOGIN));
+    print(await Prefs.getPref(Prefs.USER_PASSWORD));
   }
 
   
-
 }  
   
   

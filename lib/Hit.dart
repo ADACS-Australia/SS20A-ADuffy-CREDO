@@ -1,7 +1,7 @@
 class Hit {
   /// hit object types that are different to their originals have been market in the commetns
   /// Hit compiles all relevant data ready to send (no more processing post this)
-  /// Dart does not allow for serialisation TODO should variable names just be changed ?
+  /// Dart does not allow for serialisation TODO should variable names just be changed?
 //    @PrimaryKey(autoGenerate = true)
   int id = 0;
   //@SerializedName("frame_content");
@@ -29,9 +29,26 @@ class Hit {
   double orientation = null; //float
   int temperature = null;
 
-  send() {
-    print('space for sending function');
-
-    /// TODO: needs send function
-  }
+  Map<String, dynamic> toJson() => {
+    "frame_content": frameContent, 
+    "timestamp": timestamp,
+    "latitude": latitude,
+    "longitude": longitude,
+    "altitude": altitude,   
+    "accuracy": accuracy,
+    "provider": provider,
+    "width": width,
+    "height": height,
+    "x": x,
+    "y": y,
+    "max": maxValue,
+    "average": average,
+    "blacks":blacksPercentage,
+    "black_threshold": blackThreshold,
+    "ax": ax,
+    "ay": ay,
+    "az": az,
+    "orientation": orientation,
+    "temperature": temperature,
+  };
 }
