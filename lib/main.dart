@@ -1,7 +1,5 @@
 import 'package:credo_transcript/AllSensorsHelper.dart';
-import 'package:credo_transcript/models/mockdata.dart';
 import 'package:credo_transcript/network/repository.dart';
-import 'package:credo_transcript/utils/prefs.dart';
 import 'package:flutter/material.dart';
 import 'FileUtils.dart';
 
@@ -18,41 +16,16 @@ class CredoHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if there is an authentication toked saved in SharedPreferences
-    // If there is a token, Go straight to Detector Page
-    // If none, go to login page
-    // Prefs.getPref(Prefs.USER_TOKEN).then((savedToken){
-    //   if(savedToken.isNotEmpty){
-    //     loggedin = true;
-    //   }
-    //   else{
-    //     loggedin = false;
-    //   }
-    // });
 
-    // dynamic home;
-
-    // if(loggedin){
-    //   home = MyHomePage(title: 'CREDO Demo Home Page',);
-    // }
-    // else{
-    //   home = LoginPage(
-    //     title: 'CREDO Login Page',
-    //   );
-    // }
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         //body that will build the app when opened
         primarySwatch: Colors.blue,
       ),
-      // home: MyHomePage(
-      //   title: 'CREDO Demo Home Page',
-      // ),
       home: LoginPage(
         title: 'CREDO Login Page',
       ),
-      // home: home,
     );
   }
 }
@@ -70,6 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _detectorInitialized = false;
   var accelerometerValues;
   String fileContents = "No Data";
+
+  // This is the class that handles all interactions with CREDO API's
   CredoRepository _credoRepository = CredoRepository();
 
   @override
@@ -134,18 +109,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.pop(context);
               },
             ),
-            // RaisedButton(
-            //   child: Text("Login by Email"),
-            //   onPressed: (){
-            //      _credoRepository.requestLogin("emanehab99@yahoo.com", "XQsHsm2q7HzevhH");
-            //   },
-            // ),
-            // RaisedButton(
-            //   child: Text("Send Hit"),
-            //   onPressed: (){
-            //      _credoRepository.requestSendHit(MockData.getMockHit());
-            //   },
-            // ),
           ],
         ),
       ),
@@ -153,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// Application Login Screen
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
 
@@ -163,20 +127,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // login & password field values
   String _login;
   String _password;
 
+  // Class the handles all interaction with CREDO API's
   CredoRepository _credoRepository = CredoRepository();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override
   void initState() {
     super.initState();
+    //initialise class to load system and device info
     _credoRepository.init();
   }
 
   @override
   Widget build(BuildContext context) {
+    //Email/username field
     final emailField = TextField(
         obscureText: false,
         style: style,
@@ -188,6 +156,8 @@ class _LoginPageState extends State<LoginPage> {
         onChanged: (value) {
           _login = value;
         });
+
+    //Password Field
     final passwordField = TextField(
         obscureText: true,
         style: style,
@@ -199,7 +169,8 @@ class _LoginPageState extends State<LoginPage> {
         onChanged: (value) {
           _password = value;
         });
-    final loginButon = Material(
+    //Login Field
+    final loginButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xff01A0C7),
@@ -207,7 +178,9 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          // send login request to endpoint
           _credoRepository.requestLogin(_login, _password);
+          // navigate to detection screen
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -239,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 35.0,
                 ),
-                loginButon,
+                loginButton,
                 SizedBox(
                   height: 15.0,
                 ),

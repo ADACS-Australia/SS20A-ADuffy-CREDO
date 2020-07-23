@@ -2,13 +2,14 @@ import '../models/identity_info.dart';
 import '../Hit.dart';
 
 class DetectionRequest{
-
+  // device and system info to be sent with the request
   String deviceId;
   String deviceType;
   String deviceModel;
   String appVersion;
   String systemVersion;
 
+  // List of hits to be sent to server
   List<Hit> detections = [];
 
   DetectionRequest(List<Hit> hits, IdentityInfo info){
@@ -21,6 +22,7 @@ class DetectionRequest{
     this.detections = hits;
   }
 
+  //creates json representation of the request
   Map<String, dynamic> toJson() => {
     "device_id": deviceId,
     "device_model": deviceModel,

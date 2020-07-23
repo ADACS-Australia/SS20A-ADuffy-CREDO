@@ -1,4 +1,5 @@
 class IdentityInfo {
+  // Holds device and system identity Info
   final String deviceId;
   final String deviceType;
   final String deviceModel;

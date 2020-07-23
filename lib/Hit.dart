@@ -29,7 +29,7 @@ class Hit {
   double orientation = null; //float
   int temperature = null;
   
-
+  // return json represntation of a hit object
   Map<String, dynamic> toJson() => {
     "frame_content": frameContent.toString() ?? "", 
     "timestamp": timestamp,

@@ -13,27 +13,35 @@ import 'package:credo_transcript/utils/prefs.dart';
 import '../Hit.dart';
 
 class CredoRepository {
+  // creates a singelton class to be loaded once regardless of number of calls
   CredoRepository._privateConstructor();
   static final CredoRepository _credoRepository =
       CredoRepository._privateConstructor();
   factory CredoRepository() => _credoRepository;
 
   void init() {
+    //loads system and device information
     _getIdentityInfo();
   }
 
   IdentityInfo _identityInfo;
-  String _token;
   RestApiClient _apiClient = RestApiClient(Client());
 
   Future<void> _getIdentityInfo() async {
+    // to get device information
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    // to get system and application information
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
+    //device ID
     String deviceId;
+    // os - phone/tablet
     String deviceType;
+    // device model
     String deviceModel;
+    //application version
     String appVersion;
+    //system sdk
     String systemVersion;
 
     appVersion = packageInfo.version;
@@ -58,7 +66,6 @@ class CredoRepository {
   }
 
   Future<void> requestLogin(String login, String password) async {
-    _getIdentityInfo();
     LoginResponse loginResponse;
 
     if (login.contains('@')) {
@@ -70,8 +77,9 @@ class CredoRepository {
       loginResponse = await _apiClient
           .login(LoginByUsernameRequest(login, password, _identityInfo));
     }
-    print(loginResponse?.username);
-    _token = loginResponse?.token;
+
+    // Authorisation token returned from server to be used for subsequent requests
+    var _token = loginResponse?.token;
 
     // Saving token, username and password in shared preferences
     if (_token != null) {
@@ -81,12 +89,14 @@ class CredoRepository {
     }
   }
 
+  // print preferences for debugging purposes
   void _printPrefs() async {
     print(await Prefs.getPref(Prefs.USER_TOKEN));
     print(await Prefs.getPref(Prefs.USER_LOGIN));
     print(await Prefs.getPref(Prefs.USER_PASSWORD));
   }
 
+  //clear preferences upon logout
   Future<void> clearPrefs() async {
     try {
       bool tokenRemoved = await Prefs.removePref(Prefs.USER_TOKEN);
@@ -104,7 +114,14 @@ class CredoRepository {
   }
 
   Future<void> requestSendHit(Hit hit) async {
-    _getIdentityInfo();
+    // _getIdentityInfo();
     await _apiClient.sendHit(DetectionRequest([hit], _identityInfo));
+  }
+
+  Future<bool> checkSavedLogin() async {
+    var savedLogin = await Prefs.getPref(Prefs.USER_LOGIN);
+    var savedPassword = await Prefs.getPref(Prefs.USER_PASSWORD);
+
+    return (savedLogin != null && savedPassword != null);
   }
 }

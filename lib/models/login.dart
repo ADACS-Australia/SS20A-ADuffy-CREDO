@@ -1,6 +1,7 @@
 import 'identity_info.dart';
 
 abstract class LoginRequest {
+  /// Base login request
   String password;
   String deviceId;
   String deviceType;
@@ -12,6 +13,7 @@ abstract class LoginRequest {
 }
 
 class LoginByUsernameRequest extends LoginRequest {
+  // login request username
   String username;
 
   LoginByUsernameRequest(String username, String password, IdentityInfo info){
@@ -37,6 +39,7 @@ class LoginByUsernameRequest extends LoginRequest {
 }
 
 class LoginByEmailRequest extends LoginRequest {
+  /// login request using email
   String email;
 
   LoginByEmailRequest(String email, String password, IdentityInfo info){
