@@ -27,4 +27,9 @@ class Prefs{
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(prefKey);
   }
+
+  static Future<bool> removePref(String prefKey) async {
+    final prefs = await SharedPreferences.getInstance(); 
+    return await prefs.remove(prefKey);
+  }
 }

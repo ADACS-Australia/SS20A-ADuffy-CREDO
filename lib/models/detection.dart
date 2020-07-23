@@ -9,7 +9,7 @@ class DetectionRequest{
   String appVersion;
   String systemVersion;
 
-  List<Hit> detections;
+  List<Hit> detections = [];
 
   DetectionRequest(List<Hit> hits, IdentityInfo info){
     this.deviceId = info.deviceId;
@@ -18,7 +18,7 @@ class DetectionRequest{
     this.systemVersion = info.systemVersion;
     this.deviceType = info.deviceType;
 
-    this.detections = detections;
+    this.detections = hits;
   }
 
   Map<String, dynamic> toJson() => {

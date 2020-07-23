@@ -31,7 +31,7 @@ class  RestApiClient{
     return LoginResponse.fromJson(json);
   }
 
-  Future<void> sendHit(DetectionRequest detectionRequest) async {
+  Future<dynamic> sendHit(DetectionRequest detectionRequest) async {
     String token = await Prefs.getPref(Prefs.USER_TOKEN);
 
     final response = await _client.post(
@@ -43,10 +43,13 @@ class  RestApiClient{
       body: jsonEncode(detectionRequest));
 
       if(response.statusCode != 200)
-    {
-      print(response.body);
-      throw new Exception('Cannot send hits! Something went wrong');
-    }
+      {
+        print(response.body);
+        throw new Exception('Cannot send hits! Something went wrong');
+      }
+
+    //print hits Id's as JSON, ex. {"detections": [{id=100},{id=101} ]}, returned from server
+    print(jsonDecode(response.body));
     
   }
 

@@ -28,15 +28,16 @@ class Hit {
   double az = null; //float
   double orientation = null; //float
   int temperature = null;
+  
 
   Map<String, dynamic> toJson() => {
-    "frame_content": frameContent, 
+    "frame_content": frameContent.toString() ?? "", 
     "timestamp": timestamp,
     "latitude": latitude,
     "longitude": longitude,
     "altitude": altitude,   
     "accuracy": accuracy,
-    "provider": provider,
+    "provider": provider.toString() ?? "",
     "width": width,
     "height": height,
     "x": x,

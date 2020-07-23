@@ -1,38 +1,45 @@
-
 import 'package:credo_transcript/AllSensorsHelper.dart';
+import 'package:credo_transcript/models/mockdata.dart';
 import 'package:credo_transcript/network/repository.dart';
 import 'package:credo_transcript/utils/prefs.dart';
 import 'package:flutter/material.dart';
 import 'FileUtils.dart';
 
 Future<void> main() async {
- 
-  String savedTokin = await Prefs.getPref(Prefs.USER_TOKEN);
-  bool loggedin = savedTokin != null;
   runApp(
-    CredoHome(loggedin: loggedin,),
+    CredoHome(),
   );
 }
 
 /// Flutter operates int he form of widgets that get build
 /// and if they have states update their states when prompted.
 class CredoHome extends StatelessWidget {
-  CredoHome({Key key, this.loggedin}): super(key: key);
-
-  final bool loggedin;
+  bool loggedin = false;
 
   @override
   Widget build(BuildContext context) {
+    // Check if there is an authentication toked saved in SharedPreferences
+    // If there is a token, Go straight to Detector Page
+    // If none, go to login page
+    // Prefs.getPref(Prefs.USER_TOKEN).then((savedToken){
+    //   if(savedToken.isNotEmpty){
+    //     loggedin = true;
+    //   }
+    //   else{
+    //     loggedin = false;
+    //   }
+    // });
 
-    dynamic home; 
-    if(loggedin != null){ 
-      home = MyHomePage(title: 'CREDO Demo Home Page',);
-    }
-    else{
-      home = LoginPage(
-        title: 'CREDO Login Page',
-      );
-    }
+    // dynamic home;
+
+    // if(loggedin){
+    //   home = MyHomePage(title: 'CREDO Demo Home Page',);
+    // }
+    // else{
+    //   home = LoginPage(
+    //     title: 'CREDO Login Page',
+    //   );
+    // }
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -42,10 +49,10 @@ class CredoHome extends StatelessWidget {
       // home: MyHomePage(
       //   title: 'CREDO Demo Home Page',
       // ),
-      // home: LoginPage(
-      //   title: 'CREDO Login Page',
-      // ),
-      home: home,
+      home: LoginPage(
+        title: 'CREDO Login Page',
+      ),
+      // home: home,
     );
   }
 }
@@ -86,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
   /// this block describes the layout that the user can interact with.
   /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
   /// to update things within the scaffold use setState (inherited f rom StatefullWidget) in functions to alert the app that changes are preselnt.
@@ -121,16 +127,23 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             Text(fileContents),
-            // RaisedButton(
-            //   child: Text("Login by Username"),
-            //   onPressed: (){
-            //      _credoRepository.requestLogin("eman", "ehab");
-            //   },
-            // ),
+            RaisedButton(
+              child: Text("Logout"),
+              onPressed: () {
+                _credoRepository.clearPrefs();
+                Navigator.pop(context);
+              },
+            ),
             // RaisedButton(
             //   child: Text("Login by Email"),
             //   onPressed: (){
             //      _credoRepository.requestLogin("emanehab99@yahoo.com", "XQsHsm2q7HzevhH");
+            //   },
+            // ),
+            // RaisedButton(
+            //   child: Text("Send Hit"),
+            //   onPressed: (){
+            //      _credoRepository.requestSendHit(MockData.getMockHit());
             //   },
             // ),
           ],
@@ -141,7 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class LoginPage extends StatefulWidget {
-
   LoginPage({Key key, this.title}) : super(key: key);
 
   final String title;
@@ -150,90 +162,92 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-
 class _LoginPageState extends State<LoginPage> {
+  String _login;
+  String _password;
 
-      String _login;
-      String _password;
+  CredoRepository _credoRepository = CredoRepository();
+  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
-      CredoRepository _credoRepository = CredoRepository();
-      TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
+  @override
+  void initState() {
+    super.initState();
+    _credoRepository.init();
+  }
 
-      @override
-      Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
+    final emailField = TextField(
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "Username/Email",
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        onChanged: (value) {
+          _login = value;
+        });
+    final passwordField = TextField(
+        obscureText: true,
+        style: style,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            hintText: "Password",
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        onChanged: (value) {
+          _password = value;
+        });
+    final loginButon = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xff01A0C7),
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          _credoRepository.requestLogin(_login, _password);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    MyHomePage(title: 'CREDO Demo Home Page')),
+          );
+        },
+        child: Text("Login",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
 
-        final emailField = TextField(
-          obscureText: false,
-          style: style,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Username/Email",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-          onChanged: (value){
-            _login = value;
-          }
-        );
-        final passwordField = TextField(
-          obscureText: true,
-          style: style,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              hintText: "Password",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-          onChanged: (value){
-            _password = value;
-          }
-        );
-        final loginButon = Material(
-          elevation: 5.0,
-          borderRadius: BorderRadius.circular(30.0),
-          color: Color(0xff01A0C7),
-          child: MaterialButton(
-            minWidth: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            onPressed: () { _credoRepository.requestLogin(_login, _password);},
-            child: Text("Login",
-                textAlign: TextAlign.center,
-                style: style.copyWith(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
-          ),
-        );
-
-        return Scaffold(
-          body: Center(
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 155.0,
-                      child: Image.asset(
-                        "assets/logo.png",
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    SizedBox(height: 45.0),
-                    emailField,
-                    SizedBox(height: 25.0),
-                    passwordField,
-                    SizedBox(
-                      height: 35.0,
-                    ),
-                    loginButon,
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                  ],
+    return Scaffold(
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 45.0),
+                emailField,
+                SizedBox(height: 25.0),
+                passwordField,
+                SizedBox(
+                  height: 35.0,
                 ),
-              ),
+                loginButon,
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
             ),
           ),
-        );
-      }
-    }
+        ),
+      ),
+    );
+  }
+}
