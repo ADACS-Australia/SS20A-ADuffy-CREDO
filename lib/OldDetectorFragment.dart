@@ -1,5 +1,7 @@
 import 'package:credo_transcript/Frame.dart';
 import 'package:credo_transcript/OldCalibrationResult.dart';
+import 'package:credo_transcript/models/mockdata.dart';
+import 'package:credo_transcript/network/repository.dart';
 import 'OldFrameAnalyzer.dart';
 import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
@@ -10,6 +12,9 @@ import 'FileUtils.dart';
 var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
 OldCalibrationFinder calibrationFinder = OldCalibrationFinder();
+
+// Get the Repository class to send the hits when detected
+CredoRepository _credoRepository = CredoRepository();
 
 // void function that calls on activate camera and starts image stream
 // will also need funtionality to connect to server
@@ -57,6 +62,10 @@ Future<dynamic> processImageFrame(
       if (hit != null) {
         FileUtils.saveToFile(
             hit.toString() + ' ' + frameProcessing.timestamp.toString() + '\n');
+
+        // Send Hit to the server
+        await _credoRepository.requestSendHit(hit);
+
       }
     }
   } else {

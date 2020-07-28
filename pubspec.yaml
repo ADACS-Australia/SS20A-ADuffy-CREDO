@@ -29,6 +29,11 @@ dependencies:
   sensors:
   dartx:
   path_provider:
+  device_info: ^0.4.2+4
+  http: ^0.12.0+2
+  package_info: ^0.4.1
+  shared_preferences: 0.5.3+4
+  
   stats:
 
 dev_dependencies:
