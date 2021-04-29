@@ -10,8 +10,8 @@ class RawFormatCalibrationFinder {
   var clusterFactorHeight = 2;
   var counter = 0;
   var maxValues =
-      List<int>(); // unlike the original lists are not of a specific size
-  var avgs = List<int>();
+      <int>[]; // unlike the original lists are not of a specific size
+  var avgs = <int>[];
   var LENGTH = 10;
   // 60000; // TODO get a real value that incorporates the exposure time of the image in mils
 
