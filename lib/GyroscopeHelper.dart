@@ -4,9 +4,9 @@ import 'dart:async';
 /// class for initializing, stopping a gyroscope stream and querying its values
 
 class GyroscopeHelper {
-  StreamSubscription _streamSubscriptions;
+  StreamSubscription? _streamSubscriptions;
 
-  GyroscopeEvent gyroscopeValues;
+  GyroscopeEvent? gyroscopeValues;
 
   bool gyroscopeState = false;
 
@@ -30,7 +30,7 @@ class GyroscopeHelper {
   }
 
   void dispose() {
-    _streamSubscriptions.cancel();
+    _streamSubscriptions?.cancel();
 
     gyroscopeState = false;
   }

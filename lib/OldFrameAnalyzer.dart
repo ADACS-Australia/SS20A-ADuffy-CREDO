@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:credo_transcript/AllSensorsHelper.dart';
 
 import 'BaseFrameAnalyzer.dart';
@@ -16,10 +18,10 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
   static const HIT_BITMAP_SIZE = 60;
 
   @override
-  Hit checkHit(Frame frame, BaseFrameResult frameResult,
+  Hit? checkHit(Frame frame, BaseFrameResult frameResult,
       BaseCalibrationResult calibration, CameraImage image) {
-    OldFrameResult _frameResult = frameResult;
-    OldCalibrationResult _calibration = calibration;
+    OldFrameResult _frameResult = frameResult as OldFrameResult;
+    OldCalibrationResult _calibration = calibration as OldCalibrationResult;
     var _max = _calibration.max;
 
     print(_frameResult.max);
@@ -65,10 +67,10 @@ class OldFrameAnalyzer extends BaseFrameAnalyzer {
       }
       hit.average = _frameResult.avg.toDouble();
       hit.blacksPercentage = _frameResult.blacksPercentage;
-      hit.ax = AllSensorsHelper.accHelper.accelerometerValues.x;
-      hit.ay = AllSensorsHelper.accHelper.accelerometerValues.y;
-      hit.az = AllSensorsHelper.accHelper.accelerometerValues.z;
-      hit.temperature = null;
+      hit.ax = AllSensorsHelper.accHelper.accelerometerValues!.x;
+      hit.ay = AllSensorsHelper.accHelper.accelerometerValues!.y;
+      hit.az = AllSensorsHelper.accHelper.accelerometerValues!.z;
+      hit.temperature = 0;
 
       /// ambient temp too hardware dependant maybe the battery package does have a temp measurement ?
       /// TODO check battery package to get temperature

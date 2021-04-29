@@ -28,7 +28,7 @@ class YUVToRGBConverter {
       try {
         imgImage = img.Image(width, height);
         final int uvRowStride = image.planes[1].bytesPerRow;
-        final int uvPixelStride = image.planes[1].bytesPerPixel;
+        final int? uvPixelStride = image.planes[1].bytesPerPixel;
 
         print("uvRowStride: " + uvRowStride.toString());
         print("uvPixelStride: " + uvPixelStride.toString());
@@ -39,8 +39,8 @@ class YUVToRGBConverter {
         for (int x = 0; x < width; x++) {
           for (int y = 0; y < height; y++) {
             // for every row fill the columns
-            final int uvIndex =
-                uvPixelStride * (x / 2).floor() + uvRowStride * (y / 2).floor();
+            final int uvIndex = uvPixelStride! * (x / 2).floor() +
+                uvRowStride * (y / 2).floor();
             final int index = y * width + x;
 
             final yp = image.planes[0].bytes[index];

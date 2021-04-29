@@ -28,28 +28,28 @@ class Hit {
   double az = null; //float
   double orientation = null; //float
   int temperature = null;
-  
+
   // return json represntation of a hit object
   Map<String, dynamic> toJson() => {
-    "frame_content": frameContent.toString() ?? "", 
-    "timestamp": timestamp,
-    "latitude": latitude,
-    "longitude": longitude,
-    "altitude": altitude,   
-    "accuracy": accuracy,
-    "provider": provider.toString() ?? "",
-    "width": width,
-    "height": height,
-    "x": x,
-    "y": y,
-    "max": maxValue,
-    "average": average,
-    "blacks":blacksPercentage,
-    "black_threshold": blackThreshold,
-    "ax": ax,
-    "ay": ay,
-    "az": az,
-    "orientation": orientation,
-    "temperature": temperature,
-  };
+        "frame_content": frameContent.toString() ?? "",
+        "timestamp": timestamp,
+        "latitude": latitude,
+        "longitude": longitude,
+        "altitude": altitude,
+        "accuracy": accuracy,
+        "provider": provider.toString() ?? "",
+        "width": width,
+        "height": height,
+        "x": x,
+        "y": y,
+        "max": maxValue,
+        "average": average,
+        "blacks": blacksPercentage,
+        "black_threshold": blackThreshold,
+        "ax": ax,
+        "ay": ay,
+        "az": az,
+        "orientation": orientation,
+        "temperature": temperature,
+      };
 }

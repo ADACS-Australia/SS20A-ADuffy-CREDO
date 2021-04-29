@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 class LocationHelper {
   var location = null;
   var updateTime;
-  StreamSubscription<Position> positionStream;
+  StreamSubscription<Position>? positionStream;
 
   init() {
     /// if permission not granted return location == null
@@ -39,6 +39,6 @@ class LocationHelper {
 
   /// dispose method for the stream
   void dispose() {
-    positionStream.cancel();
+    positionStream?.cancel();
   }
 }
