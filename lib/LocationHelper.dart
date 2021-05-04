@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 
+///TODO: needs to replace errors thrown with returning location=null ??
+
 class LocationHelper {
   var location;
   var updateTime;
