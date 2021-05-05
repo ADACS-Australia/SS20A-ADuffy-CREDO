@@ -24,7 +24,7 @@ class CredoRepository {
     _getIdentityInfo();
   }
 
-  IdentityInfo _identityInfo;
+  late IdentityInfo _identityInfo;
   RestApiClient _apiClient = RestApiClient(Client());
 
   Future<void> _getIdentityInfo() async {
