@@ -31,13 +31,13 @@ class Hit {
 
   // return json represntation of a hit object
   Map<String, dynamic> toJson() => {
-        "frame_content": frameContent.toString() ?? "",
+        "frame_content": frameContent.toString(),
         "timestamp": timestamp,
         "latitude": latitude,
         "longitude": longitude,
         "altitude": altitude,
         "accuracy": accuracy,
-        "provider": provider.toString() ?? "",
+        "provider": provider.toString(),
         "width": width,
         "height": height,
         "x": x,
