@@ -1,9 +1,9 @@
 class Frame {
   var byteArray;
-  int width = 0;
-  int height = 0;
-  int imageFormat = 0;
-  double exposureTime = 0;
+  int width;
+  int height;
+  int imageFormat;
+  double exposureTime;
   var timestamp;
 }
 

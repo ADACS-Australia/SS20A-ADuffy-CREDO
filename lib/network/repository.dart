@@ -24,7 +24,7 @@ class CredoRepository {
     _getIdentityInfo();
   }
 
-  late IdentityInfo _identityInfo;
+  IdentityInfo _identityInfo;
   RestApiClient _apiClient = RestApiClient(Client());
 
   Future<void> _getIdentityInfo() async {
@@ -79,7 +79,7 @@ class CredoRepository {
     }
 
     // Authorisation token returned from server to be used for subsequent requests
-    var _token = loginResponse.token;
+    var _token = loginResponse?.token;
 
     // Saving token, username and password in shared preferences
     if (_token != null) {
@@ -104,7 +104,7 @@ class CredoRepository {
       bool passwordRemoved = await Prefs.removePref(Prefs.USER_PASSWORD);
 
       if (tokenRemoved && loginRemoved && passwordRemoved) {
-        //return true; should not need to return anything as we are dealing with an async future TODO check with eman that this is correct
+        return true;
       } else {
         throw Exception("Logout failed!");
       }

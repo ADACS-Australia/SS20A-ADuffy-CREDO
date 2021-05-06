@@ -4,7 +4,7 @@ import 'OldDetectorFragment.dart';
 /// CameraHelper initializes a stream of images from one available camera
 
 class CameraHelper {
-  CameraController? _controller;
+  CameraController _controller;
   bool _cameraInitialized = false;
   int blackThreshold = 40;
 
@@ -12,11 +12,11 @@ class CameraHelper {
     List<CameraDescription> cameras = await availableCameras();
 
     _controller = CameraController(cameras[0], ResolutionPreset.medium);
-    _controller?.initialize().then((_) async {
+    _controller.initialize().then((_) async {
       ///waits for camera controller to be initialized before starting stream
       int frame_number = 0;
       // start camera stream
-      await _controller?.startImageStream((CameraImage
+      await _controller.startImageStream((CameraImage
               image) => // CameraImage might be the wrong type to use here ??
           processImageFrame(image, frame_number, blackThreshold));
 
@@ -27,7 +27,7 @@ class CameraHelper {
 
   /// disposes of stream
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     _cameraInitialized = false;
   }
 

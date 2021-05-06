@@ -52,12 +52,11 @@ Future<dynamic> processImageFrame(
       /// not actually in byte array format !
       frameProcessing.width = image_processing.width;
       frameProcessing.height = image_processing.height;
-      frameProcessing.exposureTime =
-          0; //TODO this might actually cause issues !!! used to be null
-      frameProcessing.imageFormat = 0;
+      frameProcessing.exposureTime = null;
+      frameProcessing.imageFormat = null;
       frameProcessing.timestamp = new DateTime.now();
 
-      Hit? hit = (OldFrameAnalyzer()).checkHit(
+      Hit hit = (OldFrameAnalyzer()).checkHit(
           frameProcessing, frame_result, calibrationResult, image_processing);
       //print('$hit');
       if (hit != null) {

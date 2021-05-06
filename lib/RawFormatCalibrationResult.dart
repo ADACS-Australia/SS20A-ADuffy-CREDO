@@ -2,10 +2,10 @@ import 'package:credo_transcript/BaseCalibrationResult.dart';
 import 'dart:collection';
 
 class RawFormatCalibrationResult extends BaseCalibrationResult {
-  late int clusterFactorWidth;
-  late int clusterFactorHeight;
-  late int detectionThreshold;
-  late int calibrationNoise;
+  int clusterFactorWidth;
+  int clusterFactorHeight;
+  int detectionThreshold;
+  int calibrationNoise;
 
   final AMPLIFIER =
       1.10; // can't be static const as i need to query it during calibration

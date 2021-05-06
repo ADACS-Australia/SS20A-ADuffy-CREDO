@@ -2,9 +2,9 @@ import 'package:sensors/sensors.dart';
 import 'dart:async';
 
 class AccelerometerHelper {
-  StreamSubscription? _streamSubscriptions;
+  StreamSubscription _streamSubscriptions;
 
-  AccelerometerEvent? accelerometerValues;
+  AccelerometerEvent accelerometerValues;
 
   bool accelerometerState = false;
 
@@ -33,7 +33,7 @@ class AccelerometerHelper {
 
   /// ends and disposes of stream
   void dispose() {
-    _streamSubscriptions?.cancel();
+    _streamSubscriptions.cancel();
 
     accelerometerState = false;
   }

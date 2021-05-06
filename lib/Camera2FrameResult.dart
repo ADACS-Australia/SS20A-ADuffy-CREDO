@@ -10,17 +10,17 @@ import 'RawFormatCalibrationResult.dart';
 
 class Camera2FrameResult extends BaseFrameResult {
   var bytes; // still needs writing into
-  int originalWidth = 0;
-  int originalHeight = 0;
-  int scaledWidth = 0;
-  int scaledHeight = 0;
-  int pixelPrecision = 0;
+  int originalWidth;
+  int originalHeight;
+  int scaledWidth;
+  int scaledHeight;
+  int pixelPrecision;
   // TODO make sure all these are initialized appropriately
 
   var avg;
-  int sum = 0;
-  int max = 0;
-  int maxIndex = 0;
+  int sum;
+  int max;
+  int maxIndex;
 
   calculateFrame(CameraImage imageProcessing) {
     sum = 0;

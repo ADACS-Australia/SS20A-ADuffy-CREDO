@@ -23,7 +23,7 @@ Future<dynamic> processImageFrame(
     case 'experimental':
       {
         //statements if method is experimental;
-        Camera2FrameResult camera2frameResult = new Camera2FrameResult();
+        Camera2FrameResult camera2frameResult;
         camera2frameResult.calculateFrame(image_processing);
         //var _isCovered = camera2frameResult.isCovered(calibrationResult);
 
