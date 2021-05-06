@@ -1,88 +1,58 @@
-import 'package:credo_transcript/AllSensorsHelper.dart';
+/// Flutter code sample for BottomNavigationBar
+
+// This example shows a [BottomNavigationBar] as it is used within a [Scaffold]
+// widget. The [BottomNavigationBar] has three [BottomNavigationBarItem]
+// widgets, which means it defaults to [BottomNavigationBarType.fixed], and
+// the [currentIndex] is set to index 0. The selected item is
+// amber. The `_onItemTapped` function changes the selected item's index
+// and displays a corresponding message in the center of the [Scaffold].
+
+import 'dart:ui';
+import 'themeSettings.dart';
 import 'package:flutter/material.dart';
-import 'Frontend_CREDO/AccountsPage.dart';
-import 'Frontend_CREDO/HomePage.dart';
-import 'Frontend_CREDO/DetectorPage.dart';
-import 'Frontend_CREDO/SciencePagePage.dart';
-import 'Frontend_CREDO/HelpPage.dart';
-import 'network/repository.dart';
-import 'Frontend_CREDO/DetectorSettingsPage.dart';
-import 'Frontend_CREDO/themeSettings.dart';
+import 'HomePage.dart';
+import 'DetectorPage.dart';
+import 'SciencePagePage.dart';
+import 'HelpPage.dart';
+import 'AccountsPage.dart';
+import 'DetectorSettingsPage.dart';
 
-Future<void> main() async {
-  runApp(
-    CredoHome(),
-  );
-}
+void main() => runApp(MyApp());
 
-// initialise routes for navigation
 class Routes {
   static const String accountsPage = '/AccountsPage';
   static const String detectorSettingsPage = '/detectorsettings';
   static const String detectorStatisticsPage = '/detectorStatistics';
 }
 
-/// Flutter operates int he form of widgets that get build
-/// and if they have states update their states when prompted.
-class CredoHome extends StatelessWidget {
+/// This is the main application widget.
+class MyApp extends StatelessWidget {
   static const String _title = 'CREDO';
-
-  bool loggedin = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: credoTheme(),
-        title: _title,
-        home: MyHomePage(),
-        routes: {
-          // Routes.detectorStatisticsPage: (BuildContext context) => detector,
-          Routes.accountsPage: (BuildContext context) => AccountsPage(),
-          Routes.detectorSettingsPage: (BuildContext context) =>
-              detectorSettingsPage(),
-        });
-
-    //home: LoginPage(
+      theme: credoTheme(),
+      title: _title,
+      home: MyStatefulWidget(),
+      routes: {
+        // Routes.detectorStatisticsPage: (BuildContext context) => detector,
+        Routes.accountsPage: (BuildContext context) => AccountsPage(),
+        Routes.detectorSettingsPage: (BuildContext context) =>
+            detectorSettingsPage(),
+      },
+    );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+/// This is the stateful widget that the main application instantiates.
+class MyStatefulWidget extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  bool _detectorInitialized = false;
-  var accelerometerValues;
-  String fileContents = "No Data";
-
-  // This is the class that handles all interactions with CREDO API's
-  CredoRepository _credoRepository = CredoRepository();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  ///we create an instance of all sensors helper here as well as
-  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-  var helper = AllSensorsHelper();
-
-  _initializeDetector() {
-    if (_detectorInitialized == false) {
-      helper.startAllSensors();
-
-      _detectorInitialized = true;
-    } else {
-      helper.stopAllSensors();
-
-      _detectorInitialized = false;
-    }
-  }
-
-  /// this block describes the layout that the user can interact with.
-  /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
-  /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
+/// This is the private State class that goes with MyStatefulWidget.
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -99,7 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  /// to update things within the scaffold use setState (inherited f rom StatefullWidget) in functions to alert the app that changes are preselnt.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

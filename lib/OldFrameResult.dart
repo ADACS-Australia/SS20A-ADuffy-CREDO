@@ -9,10 +9,10 @@ import 'package:stats/stats.dart';
 /// The code in this file is a direct adaptation from kotlin-jini.c in the original project code
 
 class OldFrameResult extends BaseFrameResult {
-  int avg;
-  double blacksPercentage;
-  int max;
-  int maxIndex;
+  late int avg;
+  late double blacksPercentage;
+  late int max;
+  late int maxIndex;
 
   calculateFrame(CameraImage imageProcessing, var blackThreshold) {
     // unit8list - and we only care about the Y plane which is plane 0

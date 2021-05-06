@@ -15,16 +15,17 @@ import 'package:camera/camera.dart';
 import 'package:image/image.dart' as Img;
 
 class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
-  YUVToRGBConverter colourConverter;
+  late YUVToRGBConverter colourConverter;
   @override
 
   /// checkHit checks if hit conditions are met and then egts the data ready to be send
   /// becasue of the yuv to rgb conversion we need to pass it the original image.
   /// image could potentially replace frame all together but we kept frame from the original code
-  Hit checkHit(Frame frame, BaseFrameResult frameResult,
+  Hit? checkHit(Frame frame, BaseFrameResult frameResult,
       BaseCalibrationResult calibration, CameraImage image) {
-    Camera2FrameResult _frameResult = frameResult;
-    RawFormatCalibrationResult _calibration = calibration;
+    Camera2FrameResult _frameResult = frameResult as Camera2FrameResult;
+    RawFormatCalibrationResult _calibration =
+        calibration as RawFormatCalibrationResult;
     var maxValue = _calibration.detectionThreshold;
 
     print(
@@ -99,10 +100,10 @@ class RawFormatFrameAnalyzer extends BaseFrameAnalyzer {
       //}
       hit.average = _frameResult.avg.toDouble();
       // hit.blacksPercentage = _frameResult.blacksPercentage;
-      hit.ax = AllSensorsHelper.accHelper.accelerometerValues.x;
-      hit.ay = AllSensorsHelper.accHelper.accelerometerValues.y;
-      hit.az = AllSensorsHelper.accHelper.accelerometerValues.z;
-      hit.temperature = null;
+      hit.ax = AllSensorsHelper.accHelper.accelerometerValues!.x;
+      hit.ay = AllSensorsHelper.accHelper.accelerometerValues!.y;
+      hit.az = AllSensorsHelper.accHelper.accelerometerValues!.z;
+      hit.temperature = 0;
 
       return hit;
     }
