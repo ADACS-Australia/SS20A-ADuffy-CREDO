@@ -64,13 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  ///we create an instance of all sensors helper here as well as
-  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-  var helper = AllSensorsHelper();
+
 
   _initializeDetector() {
     if (_detectorInitialized == false) {
-      helper.startAllSensors();
+
 
       _detectorInitialized = true;
     } else {

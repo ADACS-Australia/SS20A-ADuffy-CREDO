@@ -4,6 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
+///we create an instance of all sensors helper here as well as
+///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
+var helper = AllSensorsHelper();
+
 class detectorPage extends StatefulWidget {
   //detectorPage({Key key}) : super(key: key);
   @override
@@ -16,6 +20,7 @@ class _detectorPageState extends State<detectorPage> {
   String fileContents = "No Data";
   String detectorOnOrOff = 'OFF';
   String startOrStop = 'START';
+  String cameraCoveredText = 'YES';
 
   ///we create an instance of all sensors helper here as well as
   ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
@@ -23,16 +28,23 @@ class _detectorPageState extends State<detectorPage> {
 
   _initializeDetector() {
     if (_detectorInitialized == false) {
-      //helper.startAllSensors();
       print('Detector being switched on');
+
+      helper.startAllSensors();
+
+      helper.cameraCoveredChange((bCovered) => setState(() {
+        cameraCoveredText = bCovered ? "YES" : "NO";
+      }));
+
       setState(() {
         _detectorInitialized = true;
         detectorOnOrOff = 'ON';
         startOrStop = 'STOP';
       });
     } else {
-      // helper.stopAllSensors();
       print('Turning off detector');
+
+      helper.stopAllSensors();
       setState(() {
         _detectorInitialized = false;
         detectorOnOrOff = 'OFF';
@@ -77,7 +89,7 @@ class _detectorPageState extends State<detectorPage> {
               'Detector Status',
               style: TextStyle(fontWeight: FontWeight.w300),
             ),
-            Padding(padding: EdgeInsetsDirectional.all(10)),
+            Padding(padding: EdgeInsets.all(10)),
             ElevatedButton(
                 onPressed: _initializeDetector,
                 child: Container(
@@ -93,6 +105,10 @@ class _detectorPageState extends State<detectorPage> {
                     textAlign: TextAlign.center,
                   ),
                 )),
+            Text(
+              'Camera Covered: ' + cameraCoveredText,
+              style: TextStyle(fontWeight: FontWeight.w300),
+            ),
             Padding(
               padding: const EdgeInsets.all(15.0),
             ),
