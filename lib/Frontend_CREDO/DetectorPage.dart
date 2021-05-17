@@ -1,8 +1,17 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:battery/battery.dart';
+
+/// Create a battery sensory to detect battery percentage and charge state
+var _battery = Battery();
+
+// Create a duration to handle checking the battery percentage
+const _batteryCheckDuration = Duration(seconds: 30);
+
 
 class detectorPage extends StatefulWidget {
   //detectorPage({Key key}) : super(key: key);
@@ -16,6 +25,35 @@ class _detectorPageState extends State<detectorPage> {
   String fileContents = "No Data";
   String detectorOnOrOff = 'OFF';
   String startOrStop = 'START';
+  String bCharging = "Unknown";
+  int batteryPercentage = 0;
+
+  updateBatteryLevel(timer) async {
+    int _batteryLevel = await _battery.batteryLevel;
+    setState(() {
+      batteryPercentage = _batteryLevel;
+    });
+  }
+
+  _detectorPageState() {
+    _battery.onBatteryStateChanged.listen((BatteryState state) {
+      var _bCharging = "Unknown";
+      if (state == BatteryState.full) {
+        _bCharging = "YES";
+      } else if (state == BatteryState.charging) {
+        _bCharging = "YES";
+      } else if (state == BatteryState.discharging) {
+        _bCharging = "NO";
+      }
+
+      setState(() {
+        bCharging = _bCharging;
+      });
+    });
+
+    Timer.periodic(_batteryCheckDuration, updateBatteryLevel);
+    updateBatteryLevel(null);
+  }
 
   ///we create an instance of all sensors helper here as well as
   ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
@@ -77,7 +115,7 @@ class _detectorPageState extends State<detectorPage> {
               'Detector Status',
               style: TextStyle(fontWeight: FontWeight.w300),
             ),
-            Padding(padding: EdgeInsetsDirectional.all(10)),
+            Padding(padding: EdgeInsets.all(10)),
             ElevatedButton(
                 onPressed: _initializeDetector,
                 child: Container(
@@ -173,7 +211,7 @@ class _detectorPageState extends State<detectorPage> {
                   children: [Text('Bright:'), Text('Blacks:')],
                 ),
                 TableRow(
-                  children: [Text('Charging:'), Text('Battery:')],
+                  children: [Text('Charging: ' + bCharging), Text('Battery: ' + batteryPercentage.toString() + "%")],
                 ),
               ],
             )
