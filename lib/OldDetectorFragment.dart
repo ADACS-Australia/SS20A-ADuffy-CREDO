@@ -18,8 +18,11 @@ CredoRepository _credoRepository = CredoRepository();
 
 // void function that calls on activate camera and starts image stream
 // will also need funtionality to connect to server
+
+bool? lastCovered;
+
 Future<dynamic> processImageFrame(
-    CameraImage image_processing, int start_frame, var blackThreshold) async {
+    CameraImage image_processing, int start_frame, var blackThreshold, cameraCoveredChangeCallback) async {
   // uses appv2 for
   start_frame++;
 
@@ -32,6 +35,17 @@ Future<dynamic> processImageFrame(
   print(frame_result.max);
   var _isCovered = frame_result.isCovered(
       calibrationResult); //frame_result.isCovered(calibrationResult);
+
+  /// Check if there is a camera covered change event that we need to trigger
+  if (lastCovered == null || lastCovered != _isCovered) {
+    // Store the result
+    lastCovered = _isCovered;
+
+    // Trigger the callback
+    if (cameraCoveredChangeCallback != null) {
+      cameraCoveredChangeCallback(_isCovered);
+    }
+  }
 
   if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage

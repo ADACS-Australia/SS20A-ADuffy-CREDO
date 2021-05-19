@@ -36,4 +36,8 @@ class AllSensorsHelper {
       print(e);
     }
   }
+
+  cameraCoveredChange(cameraCoveredChangeCallback cb) {
+    cameraHelper.cameraCoveredChange(cb);
+  }
 }

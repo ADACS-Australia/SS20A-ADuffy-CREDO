@@ -64,22 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  ///we create an instance of all sensors helper here as well as
-  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-  var helper = AllSensorsHelper();
-
-  _initializeDetector() {
-    if (_detectorInitialized == false) {
-      helper.startAllSensors();
-
-      _detectorInitialized = true;
-    } else {
-      helper.stopAllSensors();
-
-      _detectorInitialized = false;
-    }
-  }
-
   /// this block describes the layout that the user can interact with.
   /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
   /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
