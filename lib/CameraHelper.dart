@@ -1,15 +1,13 @@
 import 'package:camera/camera.dart';
+
 import 'OldDetectorFragment.dart';
 
 /// CameraHelper initializes a stream of images from one available camera
-
-typedef cameraCoveredChangeCallback = Function(bool bCovered);
 
 class CameraHelper {
   CameraController? _controller;
   bool _cameraInitialized = false;
   int blackThreshold = 40;
-  cameraCoveredChangeCallback? _cameraCoveredChangeCallback;
 
   init() async {
     List<CameraDescription> cameras = await availableCameras();
@@ -21,7 +19,7 @@ class CameraHelper {
       // start camera stream
       await _controller?.startImageStream((CameraImage
               image) => // CameraImage might be the wrong type to use here ??
-          processImageFrame(image, frame_number, blackThreshold, _cameraCoveredChangeCallback));
+          processImageFrame(image, frame_number, blackThreshold));
 
       /// stream of images is directly passed to processing/calibration (see OldDetectorFragment.dart)
     });
@@ -41,9 +39,5 @@ class CameraHelper {
     } else {
       dispose();
     }
-  }
-
-  cameraCoveredChange(cameraCoveredChangeCallback cb) {
-    _cameraCoveredChangeCallback = cb;
   }
 }

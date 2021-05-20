@@ -1,13 +1,16 @@
-import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/material.dart';
+
 import 'Frontend_CREDO/AccountsPage.dart';
-import 'Frontend_CREDO/HomePage.dart';
 import 'Frontend_CREDO/DetectorPage.dart';
-import 'Frontend_CREDO/SciencePagePage.dart';
-import 'Frontend_CREDO/HelpPage.dart';
-import 'network/repository.dart';
 import 'Frontend_CREDO/DetectorSettingsPage.dart';
+import 'Frontend_CREDO/HelpPage.dart';
+import 'Frontend_CREDO/HomePage.dart';
+import 'Frontend_CREDO/SciencePagePage.dart';
 import 'Frontend_CREDO/themeSettings.dart';
+import 'Globals.dart';
+import 'network/repository.dart';
+
+var globals = new Globals();
 
 Future<void> main() async {
   runApp(
@@ -72,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     homePage,
-    detectorPage(),
+    detectorPage(globals),
     sciencePage,
     helpPage(),
   ];
