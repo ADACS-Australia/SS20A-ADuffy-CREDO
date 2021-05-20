@@ -1,90 +1,83 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:credo_transcript/AllSensorsHelper.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:battery/battery.dart';
-
-/// Create a battery sensory to detect battery percentage and charge state
-var _battery = Battery();
-
-// Create a duration to handle checking the battery percentage
-const _batteryCheckDuration = Duration(seconds: 30);
-
-
-///we create an instance of all sensors helper here as well as
-///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-var helper = AllSensorsHelper();
 
 class detectorPage extends StatefulWidget {
-  //detectorPage({Key key}) : super(key: key);
+  var globals;
+
+  detectorPage(globals) {
+    this.globals = globals;
+  }
+
   @override
-  _detectorPageState createState() => new _detectorPageState();
+  _detectorPageState createState() => new _detectorPageState(globals);
 }
 
 class _detectorPageState extends State<detectorPage> {
-  bool _detectorInitialized = false;
   var accelerometerValues;
   String fileContents = "No Data";
   String detectorOnOrOff = 'OFF';
   String startOrStop = 'START';
   String cameraCoveredText = 'YES';
-  String bCharging = "Unknown";
+  String chargeText = "Unknown";
   int batteryPercentage = 0;
+  var globals;
+
+  // Create a duration to handle checking the battery percentage
+  var _batteryCheckDuration = Duration(seconds: 30);
 
   updateBatteryLevel(timer) async {
-    int _batteryLevel = await _battery.batteryLevel;
+    int _batteryLevel = await globals.battery.batteryLevel;
+    if (mounted) {
+      setState(() {
+        batteryPercentage = _batteryLevel;
+      });
+    }
+  }
+
+  updateDetectorText() {
     setState(() {
-      batteryPercentage = _batteryLevel;
+      detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
+      startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
     });
   }
 
-  _detectorPageState() {
-    _battery.onBatteryStateChanged.listen((BatteryState state) {
-      var _bCharging = "Unknown";
-      if (state == BatteryState.full) {
-        _bCharging = "YES";
-      } else if (state == BatteryState.charging) {
-        _bCharging = "YES";
-      } else if (state == BatteryState.discharging) {
-        _bCharging = "NO";
-      }
+  _detectorPageState(globals) {
+    this.globals = globals;
 
-      setState(() {
-        bCharging = _bCharging;
-      });
-    });
+    globals.onCameraCoveredChange = (bCovered) => {
+          if (mounted)
+            {
+              setState(() {
+                cameraCoveredText = bCovered ? "YES" : "NO";
+              })
+            }
+        };
+
+    globals.onChargeStateChange = (state) => {
+          if (mounted)
+            {
+              setState(() {
+                chargeText = state;
+              })
+            }
+        };
 
     Timer.periodic(_batteryCheckDuration, updateBatteryLevel);
     updateBatteryLevel(null);
+
+    detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
+    startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
+    cameraCoveredText = globals.isCameraCovered ? "YES" : "NO";
+    chargeText = globals.chargeState;
   }
 
-  _initializeDetector() {
-    if (_detectorInitialized == false) {
-      print('Detector being switched on');
-
-      helper.startAllSensors();
-
-      helper.cameraCoveredChange((bCovered) => setState(() {
-        cameraCoveredText = bCovered ? "YES" : "NO";
-      }));
-
-      setState(() {
-        _detectorInitialized = true;
-        detectorOnOrOff = 'ON';
-        startOrStop = 'STOP';
-      });
-    } else {
-      print('Turning off detector');
-
-      helper.stopAllSensors();
-      setState(() {
-        _detectorInitialized = false;
-        detectorOnOrOff = 'OFF';
-        startOrStop = 'START';
-      });
-    }
+  _toggleDetector() {
+    globals.detectorHelper.toggleAllSensors();
+    updateDetectorText();
   }
 
   @override
@@ -125,7 +118,7 @@ class _detectorPageState extends State<detectorPage> {
             ),
             Padding(padding: EdgeInsets.all(10)),
             ElevatedButton(
-                onPressed: _initializeDetector,
+                onPressed: _toggleDetector,
                 child: Container(
                   width: 500,
                   height: 50,
@@ -223,7 +216,10 @@ class _detectorPageState extends State<detectorPage> {
                   children: [Text('Bright:'), Text('Blacks:')],
                 ),
                 TableRow(
-                  children: [Text('Charging: ' + bCharging), Text('Battery: ' + batteryPercentage.toString() + "%")],
+                  children: [
+                    Text('Charging: ' + chargeText),
+                    Text('Battery: ' + batteryPercentage.toString() + "%")
+                  ],
                 ),
               ],
             )

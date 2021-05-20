@@ -1,9 +1,8 @@
 import 'AccelerometerHelper.dart';
-import 'LocationHelper.dart';
 import 'CameraHelper.dart';
-
 /// TODO import 'TemperatureHelper.dart' for checking battery temperature (not yet implemented)
 import 'GyroscopeHelper.dart';
+import 'LocationHelper.dart';
 
 ///AllSensorsHelper allows for all relevant sensors to be started and stopped simultaneously
 class AllSensorsHelper {
@@ -11,6 +10,9 @@ class AllSensorsHelper {
   static final CameraHelper cameraHelper = CameraHelper();
   static final LocationHelper locationHelper = LocationHelper();
   static final GyroscopeHelper gyroHelper = GyroscopeHelper();
+
+  // Never start running by default
+  bool isRunning = false;
 
   startAllSensors() {
     try {
@@ -37,7 +39,12 @@ class AllSensorsHelper {
     }
   }
 
-  cameraCoveredChange(cameraCoveredChangeCallback cb) {
-    cameraHelper.cameraCoveredChange(cb);
+  toggleAllSensors() {
+    isRunning = !isRunning;
+    isRunning ? startAllSensors() : stopAllSensors();
+  }
+
+  running() {
+    return isRunning;
   }
 }

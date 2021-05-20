@@ -1,13 +1,13 @@
-import 'package:credo_transcript/Frame.dart';
-import 'package:credo_transcript/OldCalibrationResult.dart';
-import 'package:credo_transcript/models/mockdata.dart';
-import 'package:credo_transcript/network/repository.dart';
-import 'OldFrameAnalyzer.dart';
-import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
-import 'OldFrameResult.dart';
-import 'Hit.dart';
+import 'package:credo_transcript/Frame.dart';
+import 'package:credo_transcript/network/repository.dart';
+
 import 'FileUtils.dart';
+import 'Hit.dart';
+import 'OldCalibrationFinder.dart';
+import 'OldFrameAnalyzer.dart';
+import 'OldFrameResult.dart';
+import 'main.dart';
 
 var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
@@ -22,7 +22,7 @@ CredoRepository _credoRepository = CredoRepository();
 bool? lastCovered;
 
 Future<dynamic> processImageFrame(
-    CameraImage image_processing, int start_frame, var blackThreshold, cameraCoveredChangeCallback) async {
+    CameraImage image_processing, int start_frame, var blackThreshold) async {
   // uses appv2 for
   start_frame++;
 
@@ -42,8 +42,10 @@ Future<dynamic> processImageFrame(
     lastCovered = _isCovered;
 
     // Trigger the callback
-    if (cameraCoveredChangeCallback != null) {
-      cameraCoveredChangeCallback(_isCovered);
+    globals.isCameraCovered = _isCovered;
+
+    if (globals.onCameraCoveredChange != null) {
+      globals.onCameraCoveredChange!(_isCovered);
     }
   }
 
