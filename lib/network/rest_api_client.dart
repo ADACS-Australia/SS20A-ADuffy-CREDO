@@ -44,7 +44,7 @@ class  RestApiClient{
   Future<dynamic> sendHit(DetectionRequest detectionRequest) async {
 
     // Retrieve authorisation token from SharedPreferences
-    String token = await Prefs.getPref(Prefs.USER_TOKEN);
+    String token = await Prefs.getPrefString(Prefs.USER_TOKEN);
 
     var requestJson = jsonEncode(detectionRequest);
     print("Detection Request: $requestJson");

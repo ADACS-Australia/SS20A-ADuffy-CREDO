@@ -1,82 +1,108 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:credo_transcript/AllSensorsHelper.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:battery/battery.dart';
+import 'package:intl/intl.dart';
 
-/// Create a battery sensory to detect battery percentage and charge state
-var _battery = Battery();
+import '../main.dart';
 
-// Create a duration to handle checking the battery percentage
-const _batteryCheckDuration = Duration(seconds: 30);
+class DetectorPage extends StatefulWidget {
 
-
-class detectorPage extends StatefulWidget {
-  //detectorPage({Key key}) : super(key: key);
   @override
-  _detectorPageState createState() => new _detectorPageState();
+  DetectorPageState createState() => new DetectorPageState();
 }
 
-class _detectorPageState extends State<detectorPage> {
-  bool _detectorInitialized = false;
+class DetectorPageState extends State<DetectorPage> {
   var accelerometerValues;
   String fileContents = "No Data";
   String detectorOnOrOff = 'OFF';
   String startOrStop = 'START';
-  String bCharging = "Unknown";
+  String cameraCoveredText = 'YES';
+  String chargeText = "Unknown";
   int batteryPercentage = 0;
+  String workingTimeText = '-';
+  String hitCountText = '-';
 
-  updateBatteryLevel(timer) async {
-    int _batteryLevel = await _battery.batteryLevel;
-    setState(() {
-      batteryPercentage = _batteryLevel;
-    });
-  }
+  // Create a duration to handle checking the battery percentage
+  var _batteryCheckDuration = Duration(seconds: 30);
 
-  _detectorPageState() {
-    _battery.onBatteryStateChanged.listen((BatteryState state) {
-      var _bCharging = "Unknown";
-      if (state == BatteryState.full) {
-        _bCharging = "YES";
-      } else if (state == BatteryState.charging) {
-        _bCharging = "YES";
-      } else if (state == BatteryState.discharging) {
-        _bCharging = "NO";
-      }
+  // Create a duration to handle second interval updates
+  var _oneSecondDuration = Duration(seconds: 1);
 
-      setState(() {
-        bCharging = _bCharging;
-      });
-    });
+  DetectorPageState() {
+    globals.onCameraCoveredChange = (bCovered) => {
+          if (mounted)
+            {
+              setState(() {
+                cameraCoveredText = bCovered ? "YES" : "NO";
+              })
+            }
+        };
+
+    globals.onChargeStateChange = (state) => {
+          if (mounted)
+            {
+              setState(() {
+                chargeText = state;
+              })
+            }
+        };
 
     Timer.periodic(_batteryCheckDuration, updateBatteryLevel);
     updateBatteryLevel(null);
+
+    Timer.periodic(_oneSecondDuration, oneSecondTimer);
+
+    detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
+    startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
+    cameraCoveredText = globals.isCameraCovered ? "YES" : "NO";
+    chargeText = globals.chargeState;
   }
 
-  ///we create an instance of all sensors helper here as well as
-  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-  var helper = AllSensorsHelper();
+  _toggleDetector() {
+    globals.detectorHelper.toggleAllSensors();
+    updateDetectorText();
+    oneSecondTimer(null);
+  }
 
-  _initializeDetector() {
-    if (_detectorInitialized == false) {
-      //helper.startAllSensors();
-      print('Detector being switched on');
+  updateBatteryLevel(timer) async {
+    int _batteryLevel = await globals.battery.batteryLevel;
+    if (mounted) {
       setState(() {
-        _detectorInitialized = true;
-        detectorOnOrOff = 'ON';
-        startOrStop = 'STOP';
-      });
-    } else {
-      // helper.stopAllSensors();
-      print('Turning off detector');
-      setState(() {
-        _detectorInitialized = false;
-        detectorOnOrOff = 'OFF';
-        startOrStop = 'START';
+        batteryPercentage = _batteryLevel;
       });
     }
+  }
+
+  updateDetectorText() {
+    setState(() {
+      detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
+      startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
+    });
+  }
+
+  oneSecondTimer(timer) {
+    if (!mounted)
+      return;
+
+    String _workingTimeText = '-';
+    String _hitCountText = '-';
+    if (globals.detectorHelper.running()) {
+      var duration = DateTime.now().difference(globals.detectorStartTime);
+
+      _workingTimeText = '${duration.inHours.toString().padLeft(2, '0')}:'
+          '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:'
+          '${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+
+      _hitCountText = globals.detectorHits.toString();
+    }
+
+    setState(() {
+      workingTimeText = _workingTimeText;
+      hitCountText = _hitCountText;
+    });
   }
 
   @override
@@ -117,7 +143,7 @@ class _detectorPageState extends State<detectorPage> {
             ),
             Padding(padding: EdgeInsets.all(10)),
             ElevatedButton(
-                onPressed: _initializeDetector,
+                onPressed: _toggleDetector,
                 child: Container(
                   width: 500,
                   height: 50,
@@ -131,6 +157,10 @@ class _detectorPageState extends State<detectorPage> {
                     textAlign: TextAlign.center,
                   ),
                 )),
+            Text(
+              'Camera Covered: ' + cameraCoveredText,
+              style: TextStyle(fontWeight: FontWeight.w300),
+            ),
             Padding(
               padding: const EdgeInsets.all(15.0),
             ),
@@ -143,7 +173,11 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(
+                          globals.detectorHelper.running() ?
+                          new DateFormat("HH:mm").format(globals.detectorStartTime) :
+                          '-'
+                      ),
                       Text(
                         'Start',
                         style: TextStyle(color: Color(0x80CEC8C8)),
@@ -158,7 +192,7 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(workingTimeText),
                       Text(
                         'Working Time',
                         style: TextStyle(color: Color(0x80CEC8C8)),
@@ -173,7 +207,7 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(hitCountText),
                       Text(
                         'Hit',
                         style: TextStyle(color: Color(0x80CEC8C8)),
@@ -211,7 +245,10 @@ class _detectorPageState extends State<detectorPage> {
                   children: [Text('Bright:'), Text('Blacks:')],
                 ),
                 TableRow(
-                  children: [Text('Charging: ' + bCharging), Text('Battery: ' + batteryPercentage.toString() + "%")],
+                  children: [
+                    Text('Charging: ' + chargeText),
+                    Text('Battery: ' + batteryPercentage.toString() + "%")
+                  ],
                 ),
               ],
             )

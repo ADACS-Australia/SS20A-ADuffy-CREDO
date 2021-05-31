@@ -1,13 +1,13 @@
-import 'package:credo_transcript/Frame.dart';
-import 'package:credo_transcript/OldCalibrationResult.dart';
-import 'package:credo_transcript/models/mockdata.dart';
-import 'package:credo_transcript/network/repository.dart';
-import 'OldFrameAnalyzer.dart';
-import 'OldCalibrationFinder.dart';
 import 'package:camera/camera.dart';
-import 'OldFrameResult.dart';
-import 'Hit.dart';
+import 'package:credo_transcript/Frame.dart';
+import 'package:credo_transcript/network/repository.dart';
+
 import 'FileUtils.dart';
+import 'Hit.dart';
+import 'OldCalibrationFinder.dart';
+import 'OldFrameAnalyzer.dart';
+import 'OldFrameResult.dart';
+import 'main.dart';
 
 var calibrationResult;
 var DEFAULT_BLACK_THRESHOLD = 40;
@@ -18,6 +18,9 @@ CredoRepository _credoRepository = CredoRepository();
 
 // void function that calls on activate camera and starts image stream
 // will also need funtionality to connect to server
+
+bool? lastCovered;
+
 Future<dynamic> processImageFrame(
     CameraImage image_processing, int start_frame, var blackThreshold) async {
   // uses appv2 for
@@ -32,6 +35,19 @@ Future<dynamic> processImageFrame(
   print(frame_result.max);
   var _isCovered = frame_result.isCovered(
       calibrationResult); //frame_result.isCovered(calibrationResult);
+
+  /// Check if there is a camera covered change event that we need to trigger
+  if (lastCovered == null || lastCovered != _isCovered) {
+    // Store the result
+    lastCovered = _isCovered;
+
+    // Trigger the callback
+    globals.isCameraCovered = _isCovered;
+
+    if (globals.onCameraCoveredChange != null) {
+      globals.onCameraCoveredChange!(_isCovered);
+    }
+  }
 
   if (_isCovered == true) {
     //isCovered(avg, calibrationResult, blacksPercentage
@@ -63,6 +79,9 @@ Future<dynamic> processImageFrame(
       if (hit != null) {
         FileUtils.saveToFile(
             hit.toString() + ' ' + frameProcessing.timestamp.toString() + '\n');
+
+        // Update the hit counter
+        globals.detectorHits++;
 
         // Send Hit to the server
         await _credoRepository.requestSendHit(hit);

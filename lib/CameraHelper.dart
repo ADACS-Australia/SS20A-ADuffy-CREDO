@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+
 import 'OldDetectorFragment.dart';
 
 /// CameraHelper initializes a stream of images from one available camera

@@ -1,13 +1,16 @@
-import 'package:credo_transcript/AllSensorsHelper.dart';
 import 'package:flutter/material.dart';
+
 import 'Frontend_CREDO/AccountsPage.dart';
-import 'Frontend_CREDO/HomePage.dart';
 import 'Frontend_CREDO/DetectorPage.dart';
-import 'Frontend_CREDO/SciencePagePage.dart';
-import 'Frontend_CREDO/HelpPage.dart';
-import 'network/repository.dart';
 import 'Frontend_CREDO/DetectorSettingsPage.dart';
+import 'Frontend_CREDO/HelpPage.dart';
+import 'Frontend_CREDO/HomePage.dart';
+import 'Frontend_CREDO/SciencePagePage.dart';
 import 'Frontend_CREDO/themeSettings.dart';
+import 'Globals.dart';
+import 'network/repository.dart';
+
+Globals globals = new Globals();
 
 Future<void> main() async {
   runApp(
@@ -39,7 +42,7 @@ class CredoHome extends StatelessWidget {
           // Routes.detectorStatisticsPage: (BuildContext context) => detector,
           Routes.accountsPage: (BuildContext context) => AccountsPage(),
           Routes.detectorSettingsPage: (BuildContext context) =>
-              detectorSettingsPage(),
+              DetectorSettingsPage(),
         });
 
     //home: LoginPage(
@@ -64,22 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  ///we create an instance of all sensors helper here as well as
-  ///write _initializeDetector as a function here as we do not want any other part of the code be able to access this function.
-  var helper = AllSensorsHelper();
-
-  _initializeDetector() {
-    if (_detectorInitialized == false) {
-      helper.startAllSensors();
-
-      _detectorInitialized = true;
-    } else {
-      helper.stopAllSensors();
-
-      _detectorInitialized = false;
-    }
-  }
-
   /// this block describes the layout that the user can interact with.
   /// the scaffold ca have a body with in turn can have one or more children (depends on the type)
   /// to update things within the scaffold use setState (inherited from StatefullWidget) in functions to alert the app that changes are present.
@@ -88,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     homePage,
-    detectorPage(),
+    DetectorPage(),
     sciencePage,
     helpPage(),
   ];

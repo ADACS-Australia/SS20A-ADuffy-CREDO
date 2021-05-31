@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         // Routes.detectorStatisticsPage: (BuildContext context) => detector,
         Routes.accountsPage: (BuildContext context) => AccountsPage(),
         Routes.detectorSettingsPage: (BuildContext context) =>
-            detectorSettingsPage(),
+            DetectorSettingsPage(),
       },
     );
   }
@@ -58,7 +58,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     homePage,
-    detectorPage(),
+    DetectorPage(),
     sciencePage,
     helpPage(),
   ];

@@ -1,9 +1,10 @@
 import 'AccelerometerHelper.dart';
-import 'LocationHelper.dart';
 import 'CameraHelper.dart';
+import 'GyroscopeHelper.dart';
+import 'LocationHelper.dart';
+import 'main.dart';
 
 /// TODO import 'TemperatureHelper.dart' for checking battery temperature (not yet implemented)
-import 'GyroscopeHelper.dart';
 
 ///AllSensorsHelper allows for all relevant sensors to be started and stopped simultaneously
 class AllSensorsHelper {
@@ -11,6 +12,9 @@ class AllSensorsHelper {
   static final CameraHelper cameraHelper = CameraHelper();
   static final LocationHelper locationHelper = LocationHelper();
   static final GyroscopeHelper gyroHelper = GyroscopeHelper();
+
+  // Never start running by default
+  bool isRunning = false;
 
   startAllSensors() {
     try {
@@ -35,5 +39,27 @@ class AllSensorsHelper {
     } catch (e) {
       print(e);
     }
+  }
+
+  toggleAllSensors() {
+    isRunning = !isRunning;
+
+    if (isRunning) {
+      // Start the detector
+      startAllSensors();
+
+      // Set the detector start time if the detector is running
+      globals.detectorStartTime = DateTime.now();
+
+      // Set the hit count back to 0
+      globals.detectorHits = 0;
+    } else {
+      // Stop the detector
+      stopAllSensors();
+    }
+  }
+
+  running() {
+    return isRunning;
   }
 }
