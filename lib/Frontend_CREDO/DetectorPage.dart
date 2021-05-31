@@ -4,19 +4,17 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:intl/intl.dart';
 
-class detectorPage extends StatefulWidget {
-  var globals;
+import '../main.dart';
 
-  detectorPage(globals) {
-    this.globals = globals;
-  }
+class DetectorPage extends StatefulWidget {
 
   @override
-  _detectorPageState createState() => new _detectorPageState(globals);
+  DetectorPageState createState() => new DetectorPageState();
 }
 
-class _detectorPageState extends State<detectorPage> {
+class DetectorPageState extends State<DetectorPage> {
   var accelerometerValues;
   String fileContents = "No Data";
   String detectorOnOrOff = 'OFF';
@@ -24,30 +22,16 @@ class _detectorPageState extends State<detectorPage> {
   String cameraCoveredText = 'YES';
   String chargeText = "Unknown";
   int batteryPercentage = 0;
-  var globals;
+  String workingTimeText = '-';
+  String hitCountText = '-';
 
   // Create a duration to handle checking the battery percentage
   var _batteryCheckDuration = Duration(seconds: 30);
 
-  updateBatteryLevel(timer) async {
-    int _batteryLevel = await globals.battery.batteryLevel;
-    if (mounted) {
-      setState(() {
-        batteryPercentage = _batteryLevel;
-      });
-    }
-  }
+  // Create a duration to handle second interval updates
+  var _oneSecondDuration = Duration(seconds: 1);
 
-  updateDetectorText() {
-    setState(() {
-      detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
-      startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
-    });
-  }
-
-  _detectorPageState(globals) {
-    this.globals = globals;
-
+  DetectorPageState() {
     globals.onCameraCoveredChange = (bCovered) => {
           if (mounted)
             {
@@ -69,6 +53,8 @@ class _detectorPageState extends State<detectorPage> {
     Timer.periodic(_batteryCheckDuration, updateBatteryLevel);
     updateBatteryLevel(null);
 
+    Timer.periodic(_oneSecondDuration, oneSecondTimer);
+
     detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
     startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
     cameraCoveredText = globals.isCameraCovered ? "YES" : "NO";
@@ -78,6 +64,45 @@ class _detectorPageState extends State<detectorPage> {
   _toggleDetector() {
     globals.detectorHelper.toggleAllSensors();
     updateDetectorText();
+    oneSecondTimer(null);
+  }
+
+  updateBatteryLevel(timer) async {
+    int _batteryLevel = await globals.battery.batteryLevel;
+    if (mounted) {
+      setState(() {
+        batteryPercentage = _batteryLevel;
+      });
+    }
+  }
+
+  updateDetectorText() {
+    setState(() {
+      detectorOnOrOff = globals.detectorHelper.running() ? 'ON' : 'OFF';
+      startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
+    });
+  }
+
+  oneSecondTimer(timer) {
+    if (!mounted)
+      return;
+
+    String _workingTimeText = '-';
+    String _hitCountText = '-';
+    if (globals.detectorHelper.running()) {
+      var duration = DateTime.now().difference(globals.detectorStartTime);
+
+      _workingTimeText = '${duration.inHours.toString().padLeft(2, '0')}:'
+          '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:'
+          '${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}';
+
+      _hitCountText = globals.detectorHits.toString();
+    }
+
+    setState(() {
+      workingTimeText = _workingTimeText;
+      hitCountText = _hitCountText;
+    });
   }
 
   @override
@@ -148,7 +173,11 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(
+                          globals.detectorHelper.running() ?
+                          new DateFormat("HH:mm").format(globals.detectorStartTime) :
+                          '-'
+                      ),
                       Text(
                         'Start',
                         style: TextStyle(color: Color(0x80CEC8C8)),
@@ -163,7 +192,7 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(workingTimeText),
                       Text(
                         'Working Time',
                         style: TextStyle(color: Color(0x80CEC8C8)),
@@ -178,7 +207,7 @@ class _detectorPageState extends State<detectorPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('-'),
+                      Text(hitCountText),
                       Text(
                         'Hit',
                         style: TextStyle(color: Color(0x80CEC8C8)),

@@ -80,6 +80,9 @@ Future<dynamic> processImageFrame(
         FileUtils.saveToFile(
             hit.toString() + ' ' + frameProcessing.timestamp.toString() + '\n');
 
+        // Update the hit counter
+        globals.detectorHits++;
+
         // Send Hit to the server
         await _credoRepository.requestSendHit(hit);
 

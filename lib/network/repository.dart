@@ -83,17 +83,17 @@ class CredoRepository {
 
     // Saving token, username and password in shared preferences
     if (_token != null) {
-      Prefs.setPref(Prefs.USER_TOKEN, _token);
-      Prefs.setPref(Prefs.USER_LOGIN, loginResponse.username);
-      Prefs.setPref(Prefs.USER_PASSWORD, password);
+      Prefs.setPrefString(Prefs.USER_TOKEN, _token);
+      Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
+      Prefs.setPrefString(Prefs.USER_PASSWORD, password);
     }
   }
 
   // print preferences for debugging purposes
   void _printPrefs() async {
-    print(await Prefs.getPref(Prefs.USER_TOKEN));
-    print(await Prefs.getPref(Prefs.USER_LOGIN));
-    print(await Prefs.getPref(Prefs.USER_PASSWORD));
+    print(await Prefs.getPrefString(Prefs.USER_TOKEN));
+    print(await Prefs.getPrefString(Prefs.USER_LOGIN));
+    print(await Prefs.getPrefString(Prefs.USER_PASSWORD));
   }
 
   //clear preferences upon logout
@@ -119,8 +119,8 @@ class CredoRepository {
   }
 
   Future<bool> checkSavedLogin() async {
-    var savedLogin = await Prefs.getPref(Prefs.USER_LOGIN);
-    var savedPassword = await Prefs.getPref(Prefs.USER_PASSWORD);
+    var savedLogin = await Prefs.getPrefString(Prefs.USER_LOGIN);
+    var savedPassword = await Prefs.getPrefString(Prefs.USER_PASSWORD);
 
     return (savedLogin != null && savedPassword != null);
   }
