@@ -17,7 +17,16 @@ class helpPage extends StatefulWidget {
 class _MyStatefulWidgetState extends State<helpPage> {
   int _index = 0;
   Color mainColour = Color(0xffee7355);
+
+  Map faqmap = {
+    'title1': 'content1',
+    'title2': 'content2',
+    'title3': 'content3',
+    'title4': 'content4',
+  };
+
   Widget build(BuildContext context) {
+    List faqlist = makeFAQlist(faqmap);
     return Container(
         padding: const EdgeInsets.all(32),
         child: CustomScrollView(
@@ -52,24 +61,16 @@ class _MyStatefulWidgetState extends State<helpPage> {
                 mainAxisSpacing: 20,
                 crossAxisCount: 2,
                 children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      child: Text(
-                        "How to use CREDO Mobile?",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(100),
-                  ),
+                  FAQ('test0', 'content0').faqAlert(context),
                   Container(
                     padding: const EdgeInsets.all(15),
                     child: TextButton(
                       child: Text(
                         "Viewing all previous hits",
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        _showDialog(context, 'title', 'content');
+                      },
                     ),
                     color: mainColour.withAlpha(200),
                   ),
@@ -119,4 +120,50 @@ class _MyStatefulWidgetState extends State<helpPage> {
           ],
         ));
   }
+}
+
+void _showDialog(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: new Text(title),
+        content: new Text(content),
+        actions: <Widget>[
+          new TextButton(
+            child: new Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+class FAQ {
+  String title = '';
+  String content = '';
+
+  FAQ(this.title, this.content);
+
+  Widget faqAlert(BuildContext context) {
+    return Container(
+      color: Color(0xffee7355),
+      padding: const EdgeInsets.all(15),
+      child: TextButton(
+        child: Text(title),
+        onPressed: () {
+          _showDialog(context, title, content);
+        },
+      ),
+    );
+  }
+}
+
+makeFAQlist(Map map) {
+  List faqlist = [];
+  map.forEach((key, value) => faqlist.add(FAQ(key, value)));
+  return faqlist;
 }
