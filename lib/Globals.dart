@@ -33,4 +33,11 @@ class Globals {
       }
     });
   }
+
+  /// Used to track when the detector was started
+  DateTime detectorStartTime = DateTime.now();
+
+  /// Used to track the number of hits that have occurred while the current
+  /// detector session has been running
+  int detectorHits = 0;
 }
