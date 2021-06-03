@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,16 +18,27 @@ class helpPage extends StatefulWidget {
 class _MyStatefulWidgetState extends State<helpPage> {
   int _index = 0;
   Color mainColour = Color(0xffee7355);
+  List<Widget> faqlist = [];
 
-  Map faqmap = {
-    'title1': 'content1',
-    'title2': 'content2',
-    'title3': 'content3',
-    'title4': 'content4',
-  };
+  /// fetch json content
+  Future<void> makeFAQlist(BuildContext context) async {
+    if (faqlist.isEmpty) {
+      String data = await DefaultAssetBundle.of(context)
+          .loadString("assets/json/FAQs.json");
+      final Map jsonResult = json.decode(data);
+
+      List<Widget> _faqlist = [];
+      jsonResult.forEach(
+          (key, value) => _faqlist.add(FAQ(key, value).faqAlert(context)));
+      setState(() {
+        faqlist = _faqlist;
+      });
+    }
+  }
 
   Widget build(BuildContext context) {
-    List faqlist = makeFAQlist(faqmap);
+    makeFAQlist(context);
+
     return Container(
         padding: const EdgeInsets.all(32),
         child: CustomScrollView(
@@ -60,61 +72,7 @@ class _MyStatefulWidgetState extends State<helpPage> {
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
                 crossAxisCount: 2,
-                children: <Widget>[
-                  FAQ('test0', 'content0').faqAlert(context),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Viewing all previous hits",
-                      ),
-                      onPressed: () {
-                        _showDialog(context, 'title', 'content');
-                      },
-                    ),
-                    color: mainColour.withAlpha(200),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Changing your Password",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(300),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Getting involved with CREDO",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(400),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "More FAQ",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(500),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "More FAQ",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(600),
-                  ),
-                ],
+                children: faqlist,
               ),
             ),
           ],
@@ -127,8 +85,14 @@ void _showDialog(BuildContext context, String title, String content) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: new Text(title),
-        content: new Text(content),
+        title: new Text(
+          title,
+          style: TextStyle(color: Color(0xFF1B1B1B)),
+        ),
+        content: new Text(
+          content,
+          style: TextStyle(color: Color(0xFF1B1B1B)),
+        ),
         actions: <Widget>[
           new TextButton(
             child: new Text("OK"),
@@ -141,6 +105,8 @@ void _showDialog(BuildContext context, String title, String content) {
     },
   );
 }
+
+///loads the json file from assets to be read in and processed
 
 class FAQ {
   String title = '';
@@ -160,10 +126,4 @@ class FAQ {
       ),
     );
   }
-}
-
-makeFAQlist(Map map) {
-  List faqlist = [];
-  map.forEach((key, value) => faqlist.add(FAQ(key, value)));
-  return faqlist;
 }
