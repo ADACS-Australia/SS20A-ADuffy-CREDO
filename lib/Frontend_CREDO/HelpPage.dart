@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,27 @@ class helpPage extends StatefulWidget {
 class _MyStatefulWidgetState extends State<helpPage> {
   int _index = 0;
   Color mainColour = Color(0xffee7355);
+  List<Widget> faqlist = [];
+
+  /// fetch json content
+  Future<void> makeFAQlist(BuildContext context) async {
+    if (faqlist.isEmpty) {
+      String data = await DefaultAssetBundle.of(context)
+          .loadString("assets/json/FAQs.json");
+      final Map jsonResult = json.decode(data);
+
+      List<Widget> _faqlist = [];
+      jsonResult.forEach(
+          (key, value) => _faqlist.add(FAQ(key, value).faqAlert(context)));
+      setState(() {
+        faqlist = _faqlist;
+      });
+    }
+  }
+
   Widget build(BuildContext context) {
+    makeFAQlist(context);
+
     return Container(
         padding: const EdgeInsets.all(32),
         child: CustomScrollView(
@@ -51,72 +72,58 @@ class _MyStatefulWidgetState extends State<helpPage> {
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
                 crossAxisCount: 2,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      child: Text(
-                        "How to use CREDO Mobile?",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(100),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Viewing all previous hits",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(200),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Changing your Password",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(300),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "Getting involved with CREDO",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(400),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "More FAQ",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(500),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: TextButton(
-                      child: Text(
-                        "More FAQ",
-                      ),
-                      onPressed: () {},
-                    ),
-                    color: mainColour.withAlpha(600),
-                  ),
-                ],
+                children: faqlist,
               ),
             ),
           ],
         ));
+  }
+}
+
+void _showDialog(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: new Text(
+          title,
+          style: TextStyle(color: Color(0xFF1B1B1B)),
+        ),
+        content: new Text(
+          content,
+          style: TextStyle(color: Color(0xFF1B1B1B)),
+        ),
+        actions: <Widget>[
+          new TextButton(
+            child: new Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+///loads the json file from assets to be read in and processed
+
+class FAQ {
+  String title = '';
+  String content = '';
+
+  FAQ(this.title, this.content);
+
+  Widget faqAlert(BuildContext context) {
+    return Container(
+      color: Color(0xffee7355),
+      padding: const EdgeInsets.all(15),
+      child: TextButton(
+        child: Text(title),
+        onPressed: () {
+          _showDialog(context, title, content);
+        },
+      ),
+    );
   }
 }

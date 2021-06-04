@@ -1,0 +1,12 @@
+{
+  "Why won’t my detector start?": "Check whether your detector settings. It could be that you have set the detector to off should your phone not be charging or the battery power is too low ",
+  "Why does my camera need to be completely covered?": "If the camera is not fully covered we would not be able to identify the signal of a cosmic ray in the frames.",
+  "What do I do with my phone while running the detector?": "You cannot navigate away from teh app while the detector is actively running so we recommend you plug it in to charge during that time.",
+  "What is the difference between “Detections” and “Frames”": "Frames describes all images your phone camera takes while looking for cosmic rays. \nDetections are those frames where we see a feature that could correspond to a cosmic ray passing through.",
+  "How do I change my password or update my details?": "You can update your details under the account settings page.",
+  "Where does my data go and what is it used for?": "Any detections will be send for processing to our server. CREDO has a number of science goals so for more information see the science tab in the app or visit the CREDO webpage.",
+  "Will people be aware of my location?": "No other users will be not aware of your location",
+  "Will running the app long term damage my phone or battery?": "Running the app for extended periods of time will drain the battery and can cause the phone to heat up. We recommend for the phone to be plugged in to charge while the detector is running.",
+  "Will all the Detections be saved to my phone and take up storage?": "No. Any detections are uploaded directly to our server and are not going to clutter up your phone."
+
+}
