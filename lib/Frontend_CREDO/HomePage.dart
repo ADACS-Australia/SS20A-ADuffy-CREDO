@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Widget homePage = Container(
+Widget homePage = SingleChildScrollView(
+    child: Container(
   padding: const EdgeInsets.all(32),
   //child: Center(
   child: Column(
@@ -31,4 +32,4 @@ Widget homePage = Container(
     ],
   ),
   //),
-);
+));

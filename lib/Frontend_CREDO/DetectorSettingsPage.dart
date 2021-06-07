@@ -15,9 +15,13 @@ class DetectorSettingsPageState extends State<DetectorSettingsPage> {
   double autoOffValue = 30;
 
   getPrefs() async {
-    var _detectOnlyWhileCharging = await Prefs.getPrefBool(Prefs.DETECT_ONLY_WHILE_CHARGING, defaultValue: false);
-    var _dropdownValue = await Prefs.getPrefString(Prefs.CAMERA_RESOLUTION, defaultValue: 'Medium');
-    var _sliderRating = await Prefs.getPrefDouble(Prefs.AUTO_OFF, defaultValue: 30);
+    var _detectOnlyWhileCharging = await Prefs.getPrefBool(
+        Prefs.DETECT_ONLY_WHILE_CHARGING,
+        defaultValue: false);
+    var _dropdownValue = await Prefs.getPrefString(Prefs.CAMERA_RESOLUTION,
+        defaultValue: 'Medium');
+    var _sliderRating =
+        await Prefs.getPrefDouble(Prefs.AUTO_OFF, defaultValue: 30);
 
     setState(() {
       detectOnlyWhileCharging = _detectOnlyWhileCharging;
@@ -37,6 +41,7 @@ class DetectorSettingsPageState extends State<DetectorSettingsPage> {
         title: Text('Detector settings '),
       ),
       body: Container(
+          // would normally replace container with SingleChildScroll view but that breaks the page
           child: ListView(
         padding: EdgeInsets.all(32),
         children: [
@@ -47,7 +52,7 @@ class DetectorSettingsPageState extends State<DetectorSettingsPage> {
               isExpanded: true,
               onChanged: (String? newValue) {
                 Prefs.setPrefString(Prefs.CAMERA_RESOLUTION, newValue!);
-                
+
                 setState(() {
                   cameraResolution = newValue;
                 });
