@@ -28,7 +28,7 @@ ThemeData credoTheme() {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Color(0xFF5C4B51)))),
+            backgroundColor: MaterialStateProperty.all(Color(0xFFEE7355)))),
     buttonTheme: ButtonThemeData(
         buttonColor: Color(0xFF5C4B51), focusColor: Color(0xFFEE7355)),
     textButtonTheme: TextButtonThemeData(
