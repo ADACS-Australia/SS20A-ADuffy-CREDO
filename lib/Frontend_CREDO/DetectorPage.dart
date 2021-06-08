@@ -19,6 +19,7 @@ class DetectorPageState extends State<DetectorPage> {
   String detectorOnOrOff = 'OFF';
   String startOrStop = 'START';
   String cameraCoveredText = 'YES';
+  Color cameraCoveredColor = Colors.grey;
   String chargeText = "Unknown";
   int batteryPercentage = 0;
   String workingTimeText = '-';
@@ -36,6 +37,8 @@ class DetectorPageState extends State<DetectorPage> {
             {
               setState(() {
                 cameraCoveredText = bCovered ? "YES" : "NO";
+                cameraCoveredColor =
+                    bCovered ? Colors.lightGreenAccent : Colors.redAccent;
               })
             }
         };
@@ -58,6 +61,8 @@ class DetectorPageState extends State<DetectorPage> {
     startOrStop = globals.detectorHelper.running() ? 'STOP' : 'START';
     cameraCoveredText = globals.isCameraCovered ? "YES" : "NO";
     chargeText = globals.chargeState;
+    cameraCoveredColor =
+        globals.isCameraCovered ? Colors.lightGreenAccent : Colors.redAccent;
   }
 
   _toggleDetector() {
@@ -156,9 +161,16 @@ class DetectorPageState extends State<DetectorPage> {
                       textAlign: TextAlign.center,
                     ),
                   )),
-              Text(
-                'Camera Covered: ' + cameraCoveredText,
-                style: TextStyle(fontWeight: FontWeight.w300),
+
+              Padding(padding: EdgeInsets.all(10)),
+              RichText(
+                text: TextSpan(text: 'Camera Covered: ', children: [
+                  TextSpan(
+                    text: "$cameraCoveredText",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w300, color: cameraCoveredColor),
+                  ),
+                ]),
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -230,26 +242,26 @@ class DetectorPageState extends State<DetectorPage> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(15)),
-              Table(
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  TableRow(
-                    children: [Text('Size:'), Text('Working:')],
-                  ),
-                  TableRow(
-                    children: [Text('Total Frames:'), Text('Good:')],
-                  ),
-                  TableRow(
-                    children: [Text('Bright:'), Text('Blacks:')],
-                  ),
-                  TableRow(
-                    children: [
-                      Text('Charging: ' + chargeText),
-                      Text('Battery: ' + batteryPercentage.toString() + "%")
-                    ],
-                  ),
-                ],
-              )
+              //Table(
+              //  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              //  children: [
+              //    TableRow(
+              //      children: [Text('Size:'), Text('Working:')],
+              //    ),
+              //    TableRow(
+              //      children: [Text('Total Frames:'), Text('Good:')],
+              //    ),
+              //    TableRow(
+              //      children: [Text('Bright:'), Text('Blacks:')],
+              //    ),
+              //    TableRow(
+              //      children: [
+              //        Text('Charging: ' + chargeText),
+              //        Text('Battery: ' + batteryPercentage.toString() + "%")
+              //      ],
+              //    ),
+              //  ],
+              //)
             ]),
         padding: const EdgeInsets.all(32),
         alignment: Alignment.center,
