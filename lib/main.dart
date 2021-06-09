@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'Frontend_CREDO/DetectorStatisticsPage.dart';
 import 'Frontend_CREDO/AccountsPage.dart';
 import 'Frontend_CREDO/DetectorPage.dart';
 import 'Frontend_CREDO/DetectorSettingsPage.dart';
@@ -39,7 +39,8 @@ class CredoHome extends StatelessWidget {
         title: _title,
         home: MyHomePage(),
         routes: {
-          // Routes.detectorStatisticsPage: (BuildContext context) => detector,
+          Routes.detectorStatisticsPage: (BuildContext context) =>
+              DetectorStatisticsPage(),
           Routes.accountsPage: (BuildContext context) => AccountsPage(),
           Routes.detectorSettingsPage: (BuildContext context) =>
               DetectorSettingsPage(),

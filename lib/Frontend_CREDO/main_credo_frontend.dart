@@ -16,6 +16,7 @@ import 'SciencePagePage.dart';
 import 'HelpPage.dart';
 import 'AccountsPage.dart';
 import 'DetectorSettingsPage.dart';
+import 'DetectorStatisticsPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,10 +37,12 @@ class MyApp extends StatelessWidget {
       title: _title,
       home: MyStatefulWidget(),
       routes: {
-        // Routes.detectorStatisticsPage: (BuildContext context) => detector,
+        //Routes.detectorStatisticsPage: (BuildContext context) => DetectorStatisticsPage(),
         Routes.accountsPage: (BuildContext context) => AccountsPage(),
         Routes.detectorSettingsPage: (BuildContext context) =>
             DetectorSettingsPage(),
+        '/detectorStatistics': (BuildContext context) =>
+            DetectorStatisticsPage(),
       },
     );
   }
@@ -124,7 +127,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               leading: Icon(Icons.leaderboard),
               title: Text('Detector Statistics'),
               onTap: () {
-                Navigator.pushNamed(context, Routes.detectorStatisticsPage);
+                Navigator.pushNamed(context, '/detectorStatistics');
               },
             ),
           ],
