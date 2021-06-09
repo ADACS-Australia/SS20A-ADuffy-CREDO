@@ -10,8 +10,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // login & password field values
-  late String _login;
-  late String _password;
+  String _login = "";
+  String _password = "";
 
   // Class the handles all interaction with CREDO API's
   CredoRepository _credoRepository = CredoRepository();

@@ -121,7 +121,7 @@ class CredoRepository {
   Future<bool> checkSavedLogin() async {
     var savedLogin = await Prefs.getPrefString(Prefs.USER_LOGIN);
     var savedPassword = await Prefs.getPrefString(Prefs.USER_PASSWORD);
-
-    return (savedLogin != null && savedPassword != null);
+    _printPrefs();
+    return (savedLogin != "" && savedPassword != "");
   }
 }
