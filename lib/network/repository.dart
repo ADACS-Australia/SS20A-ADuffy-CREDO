@@ -86,6 +86,9 @@ class CredoRepository {
       Prefs.setPrefString(Prefs.USER_TOKEN, _token);
       Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
       Prefs.setPrefString(Prefs.USER_PASSWORD, password);
+      Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, loginResponse.displayName);
+      Prefs.setPrefString(Prefs.USER_EMAIL, loginResponse.email);
+      Prefs.setPrefString(Prefs.USER_TEAM, loginResponse.team);
     }
   }
 
@@ -94,6 +97,9 @@ class CredoRepository {
     print(await Prefs.getPrefString(Prefs.USER_TOKEN));
     print(await Prefs.getPrefString(Prefs.USER_LOGIN));
     print(await Prefs.getPrefString(Prefs.USER_PASSWORD));
+    print(await Prefs.getPrefString(Prefs.USER_EMAIL));
+    print(await Prefs.getPrefString(Prefs.USER_DISPLAY_NAME));
+    print(await Prefs.getPrefString(Prefs.USER_TEAM));
   }
 
   //clear preferences upon logout

@@ -17,6 +17,9 @@ class Prefs {
   static const DETECT_ONLY_WHILE_CHARGING = "DETECT_ONLY_WHILE_CHARGING";
   static const AUTO_OFF = 'AUTO_OFF';
 
+  static const USER_DISPLAY_NAME = "DISPLAY_NAME";
+  static const USER_EMAIL = "EMAIL";
+  static const USER_TEAM = "TEAM";
 
   // TODO: Can we template these?
   // Set key/value in shared preferences
