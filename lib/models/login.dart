@@ -14,7 +14,7 @@ abstract class LoginRequest {
 
 class LoginByUsernameRequest extends LoginRequest {
   // login request username
-  String? username;
+  String username = "";
 
   LoginByUsernameRequest(String username, String password, IdentityInfo info) {
     this.username = username;
@@ -39,7 +39,7 @@ class LoginByUsernameRequest extends LoginRequest {
 
 class LoginByEmailRequest extends LoginRequest {
   /// login request using email
-  String? email;
+  String email = "";
 
   LoginByEmailRequest(String email, String password, IdentityInfo info) {
     this.email = email;

@@ -6,6 +6,7 @@ import '../models/detection.dart';
 import '../models/login.dart';
 import '../utils/prefs.dart';
 import '../models/login_response.dart';
+import '../models/user.dart';
 
 class  RestApiClient{
   /// CREDO REST API client
@@ -26,7 +27,7 @@ class  RestApiClient{
     print("Login Request: $requestJson");
 
     final response = await _client.post(
-      "$_endpoint/user/login",
+      "$_endpoint/user/register",
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
       body: requestJson);
 
@@ -65,6 +66,56 @@ class  RestApiClient{
 
     //print hits Id's as JSON, ex. {"detections": [{id=100},{id=101} ]}, returned from server
     print(jsonDecode(response.body));
+    
+  }
+
+  Future<dynamic> requestRegister(RegisterRequest registerRequest) async {
+
+    var requestJson = jsonEncode(registerRequest);
+    print("Register Request: $requestJson");
+
+    final response = await _client.post(
+      "$_endpoint/detection",
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
+      body: requestJson);
+
+      if(response.statusCode != 200)
+      {
+        print(response.body);
+        throw new Exception('Cannot register! Something went wrong');
+      }
+
+    print(jsonDecode(response.body));
+    
+  }
+
+  Future<dynamic> requestUpdateUser(UpdateUserRequest updateUserRequest) async {
+
+    // Retrieve authorisation token from SharedPreferences
+    String token = await Prefs.getPrefString(Prefs.USER_TOKEN);
+    
+    var requestJson = jsonEncode(updateUserRequest);
+    print("Update User Request: $requestJson");
+
+    final response = await _client.post(
+      "$_endpoint/user/info",
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: "Token $token",
+      },
+      body: requestJson);
+
+      if(response.statusCode != 200)
+      {
+        print(response.body);
+        throw new Exception('Cannot update user info! Something went wrong');
+      }
+
+    final responseJson = jsonDecode(response.body);
+    print("Response: $responseJson");
+    return UserInfoResponse.fromJson(responseJson);
     
   }
 
