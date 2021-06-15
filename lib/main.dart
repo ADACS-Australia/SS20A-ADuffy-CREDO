@@ -24,6 +24,7 @@ class Routes {
   static const String accountsPage = '/AccountsPage';
   static const String detectorSettingsPage = '/detectorsettings';
   static const String detectorStatisticsPage = '/detectorStatistics';
+  static const String loginPage = '/LoginPage';
 }
 
 /// Flutter operates int he form of widgets that get build
@@ -44,6 +45,7 @@ class CredoHome extends StatelessWidget {
           Routes.accountsPage: (BuildContext context) => AccountsPage(),
           Routes.detectorSettingsPage: (BuildContext context) =>
               DetectorSettingsPage(),
+          Routes.loginPage: (BuildContext context) => LoginPage(),
         });
 
     //home: LoginPage(
@@ -155,6 +157,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: Text('Detector Statistics'),
                       onTap: () {
                         Navigator.pushNamed(context, Routes.detectorStatisticsPage);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.leaderboard),
+                      title: Text('Logout'),
+                      onTap: () {
+                        _credoRepository.clearLoginPrefs();
+                        Navigator.pushNamed(context, Routes.loginPage);
                       },
                     ),
                   ],

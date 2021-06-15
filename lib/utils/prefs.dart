@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -93,7 +95,14 @@ class Prefs {
 
   // Remove key from shared preferences
   static Future<bool> removePref(String prefKey) async {
-    final prefs = await SharedPreferences.getInstance(); 
-    return await prefs.remove(prefKey);
+    try{
+      final prefs = await SharedPreferences.getInstance(); 
+      return await prefs.remove(prefKey);
+    }
+    catch (exception) {
+      print(exception);
+      return false;
+    }
+    
   }
 }

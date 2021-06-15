@@ -82,7 +82,7 @@ class CredoRepository {
     var _token = loginResponse.token;
 
     // Saving token, username and password in shared preferences
-    if (_token != null) {
+    if (_token != "") {
       Prefs.setPrefString(Prefs.USER_TOKEN, _token);
       Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
       Prefs.setPrefString(Prefs.USER_PASSWORD, password);
@@ -103,15 +103,16 @@ class CredoRepository {
   }
 
   //clear preferences upon logout
-  Future<void> clearPrefs() async {
+  Future<void> clearLoginPrefs() async {
     try {
       bool tokenRemoved = await Prefs.removePref(Prefs.USER_TOKEN);
       bool loginRemoved = await Prefs.removePref(Prefs.USER_LOGIN);
       bool passwordRemoved = await Prefs.removePref(Prefs.USER_PASSWORD);
+      await Prefs.removePref(Prefs.USER_TEAM);
+      await Prefs.removePref(Prefs.USER_EMAIL);
+      await Prefs.removePref(Prefs.USER_DISPLAY_NAME);
 
-      if (tokenRemoved && loginRemoved && passwordRemoved) {
-        //return true; should not need to return anything as we are dealing with an async future TODO check with eman that this is correct
-      } else {
+      if (!(tokenRemoved && loginRemoved && passwordRemoved)) {
         throw Exception("Logout failed!");
       }
     } catch (error) {
