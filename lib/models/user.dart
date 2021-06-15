@@ -54,7 +54,6 @@ abstract class UpdateUserRequest {
   String displayName = "";
 
   Map<String, dynamic> toJson() => {
-      
         "display_name": displayName,
         "team": team,
         "language": language,

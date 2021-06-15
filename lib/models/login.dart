@@ -27,13 +27,13 @@ class LoginByUsernameRequest extends LoginRequest {
   }
 
   Map<String, dynamic> toJson() => {
-        "usename": username,
+        "username": username,
         "password": password,
         "device_id": deviceId,
         "device_model": deviceModel,
         "app_version": appVersion,
         "system_version": systemVersion,
-        "device_type": deviceType
+        "device_type": deviceType,
       };
 }
 

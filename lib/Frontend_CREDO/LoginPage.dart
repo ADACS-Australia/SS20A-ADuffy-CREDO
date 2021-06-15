@@ -61,12 +61,12 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           // send login request to endpoint
-          _credoRepository.requestLogin(_login, _password);
-          // navigate to detection screen
-          Navigator.push(
+          _credoRepository.requestLogin(_login, _password).then((value) => Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MyHomePage()),
-          );
+          ));
+          // navigate to detection screen
+          
         },
         child: Text("Login",
             textAlign: TextAlign.center,

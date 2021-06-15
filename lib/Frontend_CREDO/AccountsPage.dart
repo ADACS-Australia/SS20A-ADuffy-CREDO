@@ -5,13 +5,8 @@ import 'package:flutter/material.dart';
 
 ///TODO: How do we prefill all the fields with stuff from the db and then on saqve update them all ??
 
-String fullName = 'Full Name';
-String emailAdress = 'UserEmail@somewhere.com';
-String userName = 'Username';
-String teamName = 'Team Name';
-String password = 'password';
-
 class AccountsPage extends StatefulWidget {
+
   @override
   AccountsPageState createState() {
     return AccountsPageState();
@@ -19,13 +14,20 @@ class AccountsPage extends StatefulWidget {
 }
 
 class AccountsPageState extends State<AccountsPage> {
+  
+  String fullName = 'Full Name';
+  String emailAdress = 'UserEmail@somewhere.com';
+  String userName = 'Username';
+  String teamName = 'Team Name';
+  String password = 'password';
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Retrieve Text Input'),
+        title: Text('Account Information'),
       ),
       body: Container(
         padding: EdgeInsets.all(32),
@@ -87,34 +89,34 @@ class AccountsPageState extends State<AccountsPage> {
                   return null;
                 },
               ),
-              TextFormField(
-                initialValue: password,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your password',
-                  labelText: 'Password',
-                ),
-                obscureText: true,
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                /// TODO: replace initial input text with the user information we get
-                initialValue: password,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your password',
-                  labelText: 'Password',
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm password';
-                  }
-                  return null;
-                },
-              ),
+              // TextFormField(
+              //   initialValue: password,
+              //   decoration: const InputDecoration(
+              //     hintText: 'Enter your password',
+              //     labelText: 'Password',
+              //   ),
+              //   obscureText: true,
+              //   validator: (String? value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please enter some text';
+              //     }
+              //     return null;
+              //   },
+              // ),
+              // TextFormField(
+              //   /// TODO: replace initial input text with the user information we get
+              //   initialValue: password,
+              //   decoration: const InputDecoration(
+              //     hintText: 'Enter your password',
+              //     labelText: 'Password',
+              //   ),
+              //   validator: (String? value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please confirm password';
+              //     }
+              //     return null;
+              //   },
+              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(

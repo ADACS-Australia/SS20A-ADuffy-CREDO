@@ -27,7 +27,7 @@ class  RestApiClient{
     print("Login Request: $requestJson");
 
     final response = await _client.post(
-      "$_endpoint/user/register",
+      "$_endpoint/user/login",
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
       body: requestJson);
 

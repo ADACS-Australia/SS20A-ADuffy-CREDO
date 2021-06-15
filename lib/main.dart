@@ -10,6 +10,7 @@ import 'Frontend_CREDO/themeSettings.dart';
 import 'Globals.dart';
 import 'network/repository.dart';
 import 'Frontend_CREDO/LoginPage.dart';
+import 'utils/prefs.dart';
 
 Globals globals = new Globals();
 
@@ -58,19 +59,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _detectorInitialized = false;
-  var accelerometerValues;
+  bool _detectorInitialized = false; //TODO: is that needed?
+  var accelerometerValues; //TODO: is that needed?
   String fileContents = "No Data";
+  String username = "";
+  String fullname  = "";
   CredoRepository _credoRepository = CredoRepository();
   late final _loggedin;
   // This is the class that handles all interactions with CREDO API's
   
+  getUserInfo() async {
+    var _username = await Prefs.getPrefString(Prefs.USER_LOGIN, defaultValue: '');
+    var _fullname = await Prefs.getPrefString(Prefs.USER_DISPLAY_NAME, defaultValue: '');
+    _loggedin = _credoRepository.checkSavedLogin();
+
+    setState(() {
+      username = _username;
+      fullname = _fullname;
+    });
+  }
 
   @override
   void initState() {
     super.initState();    
     _credoRepository.init();
-    _loggedin = _credoRepository.checkSavedLogin();
+    // _loggedin = _credoRepository.checkSavedLogin();
+    getUserInfo();
   }
 
   /// this block describes the layout that the user can interact with.
@@ -128,11 +142,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           Column(
                             children: [
                               Text(
-                                'Full Name',
+                                // 'Full Name',
+                                fullname,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 25),
                               ),
-                              Text('username')
+                              Text(username)
                             ],
                           )
                         ],
