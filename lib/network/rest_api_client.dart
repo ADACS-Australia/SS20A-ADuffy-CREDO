@@ -69,7 +69,7 @@ class  RestApiClient{
     
   }
 
-  Future<dynamic> requestRegister(RegisterRequest registerRequest) async {
+  Future<dynamic> register(RegisterRequest registerRequest) async {
 
     var requestJson = jsonEncode(registerRequest);
     print("Register Request: $requestJson");
@@ -91,7 +91,7 @@ class  RestApiClient{
     
   }
 
-  Future<dynamic> requestUpdateUser(UpdateUserRequest updateUserRequest) async {
+  Future<dynamic> updateUser(UpdateUserRequest updateUserRequest) async {
 
     // Retrieve authorisation token from SharedPreferences
     String token = await Prefs.getPrefString(Prefs.USER_TOKEN);

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:credo_transcript/models/detection.dart';
+import 'package:credo_transcript/models/user.dart';
 import 'package:http/http.dart';
 
 import 'package:device_info/device_info.dart';
@@ -89,6 +90,7 @@ class CredoRepository {
       Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, loginResponse.displayName);
       Prefs.setPrefString(Prefs.USER_EMAIL, loginResponse.email);
       Prefs.setPrefString(Prefs.USER_TEAM, loginResponse.team);
+      Prefs.setPrefString(Prefs.USER_LANGUAGE, loginResponse.language);
     }
   }
 
@@ -100,6 +102,7 @@ class CredoRepository {
     print(await Prefs.getPrefString(Prefs.USER_EMAIL));
     print(await Prefs.getPrefString(Prefs.USER_DISPLAY_NAME));
     print(await Prefs.getPrefString(Prefs.USER_TEAM));
+    
   }
 
   //clear preferences upon logout
@@ -111,6 +114,7 @@ class CredoRepository {
       await Prefs.removePref(Prefs.USER_TEAM);
       await Prefs.removePref(Prefs.USER_EMAIL);
       await Prefs.removePref(Prefs.USER_DISPLAY_NAME);
+      await Prefs.removePref(Prefs.USER_LANGUAGE);
 
       if (!(tokenRemoved && loginRemoved && passwordRemoved)) {
         throw Exception("Logout failed!");
@@ -131,4 +135,16 @@ class CredoRepository {
     _printPrefs();
     return (savedLogin != "" && savedPassword != "");
   }
+
+  Future<void> requestUpdateUserInfo(String team, String displayName, String language) async {
+    UserInfoResponse userInfoResponse;
+
+    userInfoResponse = await _apiClient.updateUser(UpdateUserRequest(displayName, team, language, _identityInfo));
+
+    Prefs.setPrefString(Prefs.USER_TEAM, userInfoResponse.team);
+    Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, userInfoResponse.displayName);
+    Prefs.setPrefString(Prefs.USER_LANGUAGE, userInfoResponse.language);    
+  }
 }
+
+

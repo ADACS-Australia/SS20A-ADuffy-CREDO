@@ -22,6 +22,8 @@ class Prefs {
   static const USER_DISPLAY_NAME = "DISPLAY_NAME";
   static const USER_EMAIL = "EMAIL";
   static const USER_TEAM = "TEAM";
+  static const USER_LANGUAGE = "LANGUAGE";
+
 
   // TODO: Can we template these?
   // Set key/value in shared preferences

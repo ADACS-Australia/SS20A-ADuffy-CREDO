@@ -1,6 +1,6 @@
 import 'identity_info.dart';
 
-abstract class RegisterRequest {
+class RegisterRequest {
   String password = "";
   String deviceId = "";
   String deviceType = "";
@@ -43,7 +43,7 @@ abstract class RegisterRequest {
   }
 }
 
-abstract class UpdateUserRequest {
+class UpdateUserRequest {
   String deviceId = "";
   String deviceType = "";
   String deviceModel = "";
