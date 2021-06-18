@@ -17,7 +17,11 @@ class DetectorStatisticsPageState extends State<DetectorStatisticsPage> {
           title: Text('Detector Statistics '),
         ),
         body: SingleChildScrollView(
-          child: dividedRow(),
+          child: Container(
+              child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: dividedRow(),
+          )),
         ));
   }
 }
@@ -25,6 +29,22 @@ class DetectorStatisticsPageState extends State<DetectorStatisticsPage> {
 Widget dividedRow() {
   return Column(
     children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            children: [
+              Text(
+                'Username',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              ),
+              Text('TeamName')
+            ],
+          )
+        ],
+      ),
+      Padding(padding: const EdgeInsets.all(15)),
       Container(
         height: 40,
         alignment: Alignment.center,
