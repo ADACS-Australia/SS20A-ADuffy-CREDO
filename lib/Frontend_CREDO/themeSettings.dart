@@ -34,6 +34,13 @@ ThemeData credoTheme() {
     textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
             foregroundColor: MaterialStateProperty.all(Colors.white))),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Color(0xFFEE7355)),
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+            shape: MaterialStateProperty.all(ContinuousRectangleBorder()),
+            )
+          ),
     // All things related to text
     fontFamily: 'Roboto',
     textTheme: TextTheme(
@@ -44,6 +51,7 @@ ThemeData credoTheme() {
       subtitle1: TextStyle(color: Color(0xFFCEC8C8)),
       subtitle2: TextStyle(color: Color(0xFF8D8D8D)),
       headline6: TextStyle(color: Colors.white),
+      headline5: TextStyle(color: Color(0xFFEE7355), fontWeight: FontWeight.bold)
     ),
   );
 
