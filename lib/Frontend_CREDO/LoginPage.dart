@@ -100,10 +100,12 @@ class _LoginPageState extends State<LoginPage> {
               image: AssetImage("assets/images/credo_background.png"), 
               fit: BoxFit.cover)),
           child:// Center(
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            ListView(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              padding: EdgeInsets.all(30),
               children: [
                 Image(image: AssetImage('assets/images/credo_logo.png'), height: 120, width: 220,),
+                SizedBox(height: 15),
                 Container(
                   padding: EdgeInsets.all(20),
                   width: 350,
@@ -120,8 +122,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(25), //child: loginButton,
-                  child: Container(width: 350, height: 50, child: loginButton,),
+                  padding: EdgeInsets.fromLTRB(0, 25, 0, 25), //child: loginButton,
+                  child: Container(height: 50, child: loginButton,),
                 ),
               ],
             // ),

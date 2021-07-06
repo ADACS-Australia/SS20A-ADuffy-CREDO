@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String username = "";
   String fullname  = "";
   CredoRepository _credoRepository = CredoRepository();
-  late final _loggedin;
+  var _loggedin;
   // This is the class that handles all interactions with CREDO API's
   
   getUserInfo() async {
