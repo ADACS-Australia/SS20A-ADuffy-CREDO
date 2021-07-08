@@ -145,6 +145,10 @@ class CredoRepository {
     Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, userInfoResponse.displayName);
     Prefs.setPrefString(Prefs.USER_LANGUAGE, userInfoResponse.language);    
   }
+
+  Future requestRegisterAccount(String displayName, String team, String email, String password, String username) async {
+    await _apiClient.register(RegisterRequest(username, password, displayName, email, team, 'en', _identityInfo));
+  }
 }
 
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../network/repository.dart';
 import '../main.dart';
+import 'RegisterAccountPage.dart';
 
 // Application Login Screen
 class LoginPage extends StatefulWidget {
@@ -27,22 +28,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //Email/username field
-    // final emailField = TextField(
-    //     obscureText: false,
-    //     decoration: InputDecoration(
-    //         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-    //         hintText: "Username/Email",
-    //         border:
-    //             OutlineInputBorder()
-    //             ),
-    //     onChanged: (value) {
-    //       _login = value;
-    //     });
     final emailField = TextFormField(
       obscureText: false,
       decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Username/Email",
             border: OutlineInputBorder(),
             ),
@@ -62,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         obscureText: true,
         // style: style,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Password",
             border: OutlineInputBorder()
             ),
@@ -76,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
           _password = value;
         });
 
-    
     final loginButton = OutlinedButton(
       style: Theme.of(context).outlinedButtonTheme.style,
       onPressed: () {
@@ -104,29 +92,40 @@ class _LoginPageState extends State<LoginPage> {
             child:// Center(
               ListView(
                 // crossAxisAlignment: CrossAxisAlignment.center,
-                padding: EdgeInsets.all(30),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                 children: [
-                  Image(image: AssetImage('assets/images/credo_logo.png'), height: 120, width: 220,),
+                  Image(image: AssetImage('assets/images/credo_logo.png'), height: 80, width: 200,),
                   SizedBox(height: 15),
                   Container(
                     padding: EdgeInsets.all(20),
                     width: 350,
-                    height: 250,
+                    height: 230,
                     color: Colors.white,
                     child: Column(
                       children: [
                         Text("Login", style: Theme.of(context).textTheme.headline5,),
                         SizedBox(height: 24),
                         Expanded(child: emailField),
-                        SizedBox(height: 24),
+                        SizedBox(height:5),
                         Expanded(child: passwordField),
                       ],
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 25, 0, 25), 
+                    padding: EdgeInsets.fromLTRB(0, 25, 0, 10), 
                     child: Container(height: 50, child: loginButton,),
                   ),
+                  Padding(
+                    padding: EdgeInsets.all(0), 
+                    child: TextButton(
+                      child: Text("Register a new account"), 
+                      onPressed: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) => RegisterAccountPage()));
+                      },
+                    ),
+                  )
                 ],
               // ),
             ),

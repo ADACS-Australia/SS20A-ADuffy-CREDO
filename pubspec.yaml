@@ -35,8 +35,10 @@ dependencies:
   package_info: ^0.4.1
   shared_preferences: 0.5.3+4
   battery:
+  email_validator: ^1.0.6
   
   stats:
+    
 
 dev_dependencies:
   flutter_test:

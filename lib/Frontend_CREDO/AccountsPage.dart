@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../network/repository.dart';
 import '../utils/prefs.dart';
 
@@ -60,18 +61,21 @@ class AccountsPageState extends State<AccountsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(50),
+                      ],
                       initialValue: fullName,
                       decoration: const InputDecoration(
                         hintText: 'First and Last Name',
                         labelText: 'Full Name',
                       ),
                       onChanged: (String newValue){   
-                        print(newValue);
+                        // print(newValue);
                         fullName = newValue;                    
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
+                          return 'Please enter full name';
                         }
                         return null;
                       },
@@ -92,7 +96,7 @@ class AccountsPageState extends State<AccountsPage> {
                     TextFormField(
                       initialValue: emailAdress,
                       decoration: const InputDecoration(
-                        hintText: 'Enter your email',
+                        hintText: 'Your email address',
                         labelText: 'Email',
                       ),
                       onChanged: (String newValue){                       
@@ -100,13 +104,16 @@ class AccountsPageState extends State<AccountsPage> {
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
+                          return 'Please enter your Email';
                         }
                         return null;
                       },
                     ),
                     TextFormField(
                       initialValue: teamName,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(50),
+                      ],
                       decoration: const InputDecoration(
                         ///TODO: should there be a different system for teams ??
                         hintText: 'Your Team Name',
