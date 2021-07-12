@@ -26,7 +26,7 @@ class CredoRepository {
   }
 
   late IdentityInfo _identityInfo;
-  RestApiClient _apiClient = RestApiClient(Client());
+  RestApiClient _apiClient = RestApiClient();
 
   Future<void> _getIdentityInfo() async {
     // to get device information
@@ -68,29 +68,32 @@ class CredoRepository {
 
   Future<void> requestLogin(String login, String password) async {
     LoginResponse loginResponse;
-
-    if (login.contains('@')) {
-      print("login by email");
-      loginResponse = await _apiClient
-          .login(LoginByEmailRequest(login, password, _identityInfo));
-    } else {
-      print("login by username");
+    try{
+      if (login.contains('@')) {
+        print("login by email");
+        loginResponse = await _apiClient
+            .login(LoginByEmailRequest(login, password, _identityInfo));
+      } else {
+        print("login by username");
       loginResponse = await _apiClient
           .login(LoginByUsernameRequest(login, password, _identityInfo));
-    }
+      }
 
-    // Authorisation token returned from server to be used for subsequent requests
-    var _token = loginResponse.token;
+      // Authorisation token returned from server to be used for subsequent requests
+      var _token = loginResponse.token;
 
-    // Saving token, username and password in shared preferences
-    if (_token != "") {
-      Prefs.setPrefString(Prefs.USER_TOKEN, _token);
-      Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
-      Prefs.setPrefString(Prefs.USER_PASSWORD, password);
-      Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, loginResponse.displayName);
-      Prefs.setPrefString(Prefs.USER_EMAIL, loginResponse.email);
-      Prefs.setPrefString(Prefs.USER_TEAM, loginResponse.team);
-      Prefs.setPrefString(Prefs.USER_LANGUAGE, loginResponse.language);
+      // Saving token, username and password in shared preferences
+      if (_token != "") {
+        Prefs.setPrefString(Prefs.USER_TOKEN, _token);
+        Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
+        Prefs.setPrefString(Prefs.USER_PASSWORD, password);
+        Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, loginResponse.displayName);
+        Prefs.setPrefString(Prefs.USER_EMAIL, loginResponse.email);
+        Prefs.setPrefString(Prefs.USER_TEAM, loginResponse.team);
+        Prefs.setPrefString(Prefs.USER_LANGUAGE, loginResponse.language);
+      }
+    } catch(e) {
+      print(e);
     }
   }
 

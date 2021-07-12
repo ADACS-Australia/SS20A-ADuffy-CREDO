@@ -7,17 +7,20 @@ import '../models/login.dart';
 import '../utils/prefs.dart';
 import '../models/login_response.dart';
 import '../models/user.dart';
+import 'api_base_helper.dart';
 
 class  RestApiClient{
   /// CREDO REST API client
   /// handles all requests to and responses from CREDO endpoint
  
-  // CREDo endpoint
-  static const String _endpoint = "https://api.credo.science/api/v2";
+  // CREDO endpoint
+  // static const String _endpoint = "https://api.credo.science/api/v2";
   // HTTP client
-  final Client _client;
+  // final Client _client = Client();
 
-  RestApiClient(this._client);
+  // RestApiClient(this._client);
+
+  APIBaseHelper _helper = APIBaseHelper();
 
   
   Future<LoginResponse> login(LoginRequest loginRequest) async {
@@ -26,19 +29,10 @@ class  RestApiClient{
     var requestJson = jsonEncode(loginRequest);
     print("Login Request: $requestJson");
 
-    final response = await _client.post(
-      "$_endpoint/user/login",
+    final responseJson = await _helper.post(
+      "/user/login",
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
       body: requestJson);
-
-    if(response.statusCode != 200)
-    {
-      print(response.body);
-      throw new Exception('Cannot login! Something went wrong');
-    }
-    
-    final responseJson = jsonDecode(response.body);
-    print("Response: $responseJson");
     return LoginResponse.fromJson(responseJson);
   }
 
@@ -50,22 +44,22 @@ class  RestApiClient{
     var requestJson = jsonEncode(detectionRequest);
     print("Detection Request: $requestJson");
 
-    final response = await _client.post(
-      "$_endpoint/detection",
+    final responseJson = await _helper.post(
+      "/detection",
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Token $token",
       },
       body: requestJson);
 
-      if(response.statusCode != 200)
-      {
-        print(response.body);
-        throw new Exception('Cannot send hits! Something went wrong');
-      }
+      // if(response.statusCode != 200)
+      // {
+      //   print(response.body);
+      //   throw new Exception('Cannot send hits! Something went wrong');
+      // }
 
     //print hits Id's as JSON, ex. {"detections": [{id=100},{id=101} ]}, returned from server
-    print(jsonDecode(response.body));
+    print(responseJson);
     
   }
 
@@ -74,20 +68,20 @@ class  RestApiClient{
     var requestJson = jsonEncode(registerRequest);
     print("Register Request: $requestJson");
 
-    final response = await _client.post(
-      "$_endpoint/user/register",
+    final responseJson = await _helper.post(
+      "/user/register",
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },
       body: requestJson);
 
-      if(response.statusCode != 200)
-      {
-        print(response.body);
-        throw new Exception('Cannot register! Something went wrong');
-      }
+      // if(response.statusCode != 200)
+      // {
+      //   print(response.body);
+      //   throw new Exception('Cannot register! Something went wrong');
+      // }
 
-    print(jsonDecode(response.body));
+    print(responseJson);
     
   }
 
@@ -99,22 +93,22 @@ class  RestApiClient{
     var requestJson = jsonEncode(updateUserRequest);
     print("Update User Request: $requestJson");
 
-    final response = await _client.post(
-      "$_endpoint/user/info",
+    final responseJson = await _helper.post(
+      "/user/info",
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Token $token",
       },
       body: requestJson);
 
-      if(response.statusCode != 200)
-      {
-        print(response.body);
-        throw new Exception('Cannot update user info! Something went wrong');
-      }
+      // if(response.statusCode != 200)
+      // {
+      //   print(response.body);
+      //   throw new Exception('Cannot update user info! Something went wrong');
+      // }
 
-    final responseJson = jsonDecode(response.body);
-    print("Response: $responseJson");
+    // final responseJson = jsonDecode(response.body);
+    // print("Response: $responseJson");
     return UserInfoResponse.fromJson(responseJson);
     
   }

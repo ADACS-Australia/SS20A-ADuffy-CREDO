@@ -26,6 +26,25 @@ class _LoginPageState extends State<LoginPage> {
     _credoRepository.init();
   }
 
+  void _showDialog(context, message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: new Text(message),
+          actions: <Widget>[
+            new ElevatedButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final emailField = TextFormField(
@@ -69,10 +88,35 @@ class _LoginPageState extends State<LoginPage> {
       style: Theme.of(context).outlinedButtonTheme.style,
       onPressed: () {
         if(_formKey.currentState!.validate()){
-          _credoRepository.requestLogin(_login, _password).then((value) => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
-          ));
+          // Show progress
+          showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: Center(
+                child: Card(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          _credoRepository.requestLogin(_login, _password)
+            .then((value){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()));
+            },
+          ).onError((error, stackTrace) {
+            Navigator.of(context).pop();
+            _showDialog(context, error.toString());
+          });
         }
       }, 
       child: Text("LOGIN")

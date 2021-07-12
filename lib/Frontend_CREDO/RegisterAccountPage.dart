@@ -31,6 +31,24 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
     _credoRepository.init();
   }
 
+  void _showDialog(context, message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: new Text(message),
+          actions: <Widget>[
+            new ElevatedButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context){
 
@@ -148,22 +166,49 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
           if(value == null || value.isEmpty){
             return "Please re-enter your password";
           }
+          if(value.compareTo(_password) != 0){
+            return "Passwords don't match";
+          }
           return null;
         },
         onChanged: (value) {
           _password = value;
-        }
+        },
       );
 
     final signupButton = OutlinedButton(
       style: Theme.of(context).outlinedButtonTheme.style,
       onPressed: () {
         if(_formKey.currentState!.validate()){
+          showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: Center(
+                child: Card(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ),
+          );
           _credoRepository.requestRegisterAccount(_fullName, "ADACS", _email, _password, _username)
-          .then((value) => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          ));
+          .then((value) {
+            Navigator.of(context).pop();
+            _showDialog(context, "Registration completed successfully. You will receive an activation email. Once your email is verified, you can login to CREDO!");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()));
+            },
+          ).onError((error, stackTrace){
+            Navigator.of(context).pop();
+            _showDialog(context, error.toString());
+          });
         }
       }, 
       child: Text("SIGN UP")
