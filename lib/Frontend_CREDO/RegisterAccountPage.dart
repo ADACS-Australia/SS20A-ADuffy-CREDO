@@ -53,6 +53,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
   Widget build(BuildContext context){
 
     final fullNameField = TextFormField(
+        style: TextStyle(color: Theme.of(context).primaryColor),
         inputFormatters: [
           LengthLimitingTextInputFormatter(50),
         ],
@@ -73,6 +74,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
     );
     
     final emailField = TextFormField(
+      style: TextStyle(color: Theme.of(context).primaryColor),
       decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Email",
@@ -92,6 +94,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
     );
 
     final usernameField = TextFormField(
+      style: TextStyle(color: Theme.of(context).primaryColor),
       inputFormatters: [
         LengthLimitingTextInputFormatter(50),
         FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9+.@\-_]')),
@@ -113,6 +116,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
     );
 
     final teamNameField = TextFormField(
+      style: TextStyle(color: Theme.of(context).primaryColor),
       inputFormatters: [
           LengthLimitingTextInputFormatter(50),
       ],
@@ -133,6 +137,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
     );
 
     final passwordField = TextFormField(
+        style: TextStyle(color: Theme.of(context).primaryColor),
         obscureText: true,
         inputFormatters: [
           LengthLimitingTextInputFormatter(128),
@@ -156,6 +161,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
         });
 
     final confirmPasswordField = TextFormField(
+        style: TextStyle(color: Theme.of(context).primaryColor),
         obscureText: true,
         inputFormatters: [
           LengthLimitingTextInputFormatter(128),

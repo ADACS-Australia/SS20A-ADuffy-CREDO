@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final emailField = TextFormField(
+      style: TextStyle(color: Theme.of(context).primaryColor),
       obscureText: false,
       decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
     //Password Field
     final passwordField = TextFormField(
         obscureText: true,
-        // style: style,
+        style: TextStyle(color: Theme.of(context).primaryColor),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Password",
