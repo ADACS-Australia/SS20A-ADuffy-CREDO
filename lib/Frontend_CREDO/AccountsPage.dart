@@ -139,8 +139,40 @@ class AccountsPageState extends State<AccountsPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
+                            showDialog(
+                              context: context, 
+                              barrierDismissible: false,
+                              builder: (_) => WillPopScope(
+                                onWillPop: () async => false,
+                                child: Center(
+                                  child: Card(
+                                    child: Container(
+                                      width: 80,
+                                      height: 80,
+                                      padding: EdgeInsets.all(12.0),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
                             // Process data.
-                            _credoRepository.requestUpdateUserInfo(teamName, fullName, 'en');
+                            _credoRepository.requestUpdateUserInfo(teamName, fullName, 'en')
+                              .then((value){
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Account updated!")
+                                    )
+                                  );
+                              }).onError((error, stackTrace){
+                                Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(error.toString())
+                                      )
+                                    );
+                              });
                           }
                         },
                         child: const Text('Save'),
@@ -153,7 +185,8 @@ class AccountsPageState extends State<AccountsPage> {
           );
           }
           else{
-            return Text("loading...");
+            return SnackBar
+            (content: Text("Loading..."));
           }
         });
     // return Scaffold(
