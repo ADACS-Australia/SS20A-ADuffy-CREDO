@@ -26,25 +26,6 @@ class _LoginPageState extends State<LoginPage> {
     _credoRepository.init();
   }
 
-  void _showDialog(context, message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: new Text(message),
-          actions: <Widget>[
-            new ElevatedButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final emailField = TextFormField(
@@ -106,16 +87,20 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           );
-
           _credoRepository.requestLogin(_login, _password)
             .then((value){
-              Navigator.push(
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => MyHomePage()));
             },
           ).onError((error, stackTrace) {
             Navigator.of(context).pop();
-            _showDialog(context, error.toString());
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString())
+                )
+              );
           });
         }
       }, 

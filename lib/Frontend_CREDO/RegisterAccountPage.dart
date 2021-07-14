@@ -146,6 +146,9 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
           if(value == null || value.isEmpty){
             return "Please enter password";
           }
+          if(value.compareTo(_confirmPassword) != 0){
+            return "Passwords don't match";
+          }
           return null;
         },
         onChanged: (value) {
@@ -201,13 +204,17 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
           .then((value) {
             Navigator.of(context).pop();
             _showDialog(context, "Registration completed successfully. You will receive an activation email. Once your email is verified, you can login to CREDO!");
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => LoginPage()));
             },
           ).onError((error, stackTrace){
             Navigator.of(context).pop();
-            _showDialog(context, error.toString());
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString())
+                )
+              );
           });
         }
       }, 
@@ -239,7 +246,7 @@ class _RegisterAccountPageState extends State<RegisterAccountPage>{
                     color: Colors.white,
                     child: Column(
                       children: [
-                        Text("Create an account", style: Theme.of(context).textTheme.headline5,),
+                        Text("Create new account", style: Theme.of(context).textTheme.headline5,),
                         SizedBox(height: 20),
                         Expanded(child: fullNameField),
                         Expanded(child: emailField),
