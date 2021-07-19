@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -16,6 +18,11 @@ class Prefs {
   static const CAMERA_RESOLUTION = "CAMERA_RESOLUTION";
   static const DETECT_ONLY_WHILE_CHARGING = "DETECT_ONLY_WHILE_CHARGING";
   static const AUTO_OFF = 'AUTO_OFF';
+
+  static const USER_DISPLAY_NAME = "DISPLAY_NAME";
+  static const USER_EMAIL = "EMAIL";
+  static const USER_TEAM = "TEAM";
+  static const USER_LANGUAGE = "LANGUAGE";
 
 
   // TODO: Can we template these?
@@ -90,7 +97,14 @@ class Prefs {
 
   // Remove key from shared preferences
   static Future<bool> removePref(String prefKey) async {
-    final prefs = await SharedPreferences.getInstance(); 
-    return await prefs.remove(prefKey);
+    try{
+      final prefs = await SharedPreferences.getInstance(); 
+      return await prefs.remove(prefKey);
+    }
+    catch (exception) {
+      print(exception);
+      return false;
+    }
+    
   }
 }

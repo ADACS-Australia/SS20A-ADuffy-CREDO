@@ -9,6 +9,8 @@ import 'Frontend_CREDO/SciencePagePage.dart';
 import 'Frontend_CREDO/themeSettings.dart';
 import 'Globals.dart';
 import 'network/repository.dart';
+import 'Frontend_CREDO/LoginPage.dart';
+import 'utils/prefs.dart';
 
 Globals globals = new Globals();
 
@@ -23,6 +25,7 @@ class Routes {
   static const String accountsPage = '/AccountsPage';
   static const String detectorSettingsPage = '/detectorsettings';
   static const String detectorStatisticsPage = '/detectorStatistics';
+  static const String loginPage = '/LoginPage';
 }
 
 /// Flutter operates int he form of widgets that get build
@@ -30,7 +33,7 @@ class Routes {
 class CredoHome extends StatelessWidget {
   static const String _title = 'CREDO';
 
-  bool loggedin = false;
+  // bool loggedin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,7 @@ class CredoHome extends StatelessWidget {
           Routes.accountsPage: (BuildContext context) => AccountsPage(),
           Routes.detectorSettingsPage: (BuildContext context) =>
               DetectorSettingsPage(),
+          Routes.loginPage: (BuildContext context) => LoginPage(),
         });
 
     //home: LoginPage(
@@ -55,16 +59,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _detectorInitialized = false;
-  var accelerometerValues;
+  bool _detectorInitialized = false; //TODO: is that needed?
+  var accelerometerValues; //TODO: is that needed?
   String fileContents = "No Data";
-
-  // This is the class that handles all interactions with CREDO API's
+  String username = "";
+  String fullname  = "";
   CredoRepository _credoRepository = CredoRepository();
+  var _loggedin;
+  // This is the class that handles all interactions with CREDO API's
+  
+  getUserInfo() async {
+    var _username = await Prefs.getPrefString(Prefs.USER_LOGIN, defaultValue: '');
+    var _fullname = await Prefs.getPrefString(Prefs.USER_DISPLAY_NAME, defaultValue: '');
+    _loggedin = _credoRepository.checkSavedLogin();
+
+    setState(() {
+      username = _username;
+      fullname = _fullname;
+    });
+  }
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
+    _credoRepository.init();
+    // _loggedin = _credoRepository.checkSavedLogin();
+    getUserInfo();
   }
 
   /// this block describes the layout that the user can interact with.
@@ -86,95 +106,130 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  /// to update things within the scaffold use setState (inherited f rom StatefullWidget) in functions to alert the app that changes are preselnt.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('CREDO Sample'),
-        titleTextStyle: optionStyle,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Row(
-                children: [
-                  Column(
-                    children: [
-                      Icon(
-                        Icons.account_circle_outlined,
-                        size: 30,
-                      )
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Column(
-                    children: [
-                      Text(
-                        'Full Name',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+    return FutureBuilder<bool>(
+        initialData: false,
+        future: _loggedin, 
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          Widget children = LoginPage();
+          var _drawer;
+          if(snapshot.connectionState == ConnectionState.done){
+            if (snapshot.hasData) {
+            print('has data ${snapshot.data}');
+            if(snapshot.data == false){
+              children = LoginPage();
+            }
+            else{
+              children = _widgetOptions.elementAt(_selectedIndex);
+              _drawer = Drawer(
+                child: ListView(
+                  // Important: Remove any padding from the ListView.
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    DrawerHeader(
+                      child: Row(
+                        children: [
+                          Column(
+                            children: [
+                              Icon(
+                                Icons.account_circle_outlined,
+                                size: 30,
+                              )
+                            ],
+                          ),
+                          Padding(padding: EdgeInsets.all(5)),
+                          Column(
+                            children: [
+                              Text(
+                                // 'Full Name',
+                                fullname,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25),
+                              ),
+                              Text(username)
+                            ],
+                          )
+                        ],
                       ),
-                      Text('username')
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.account_circle),
+                      title: Text('Account'),
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.accountsPage);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.build),
+                      title: Text('Detector Settings'),
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.detectorSettingsPage);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.leaderboard),
+                      title: Text('Detector Statistics'),
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.detectorStatisticsPage);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.leaderboard),
+                      title: Text('Logout'),
+                      onTap: () {
+                        _credoRepository.clearLoginPrefs();
+                        Navigator.pushNamed(context, Routes.loginPage);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }
+          } else if (snapshot.hasError) {
+            print('error');
+            children = LoginPage();//<Widget>[
+          } else {
+            print('Doesnt have data');
+            children = LoginPage();//<Widget>[
+          }
+          }
+          
+          return Scaffold(
+            appBar: AppBar(
+                title: const Text('CREDO Sample'),
+                titleTextStyle: optionStyle,
+            ), 
+            drawer: _drawer,
+            body: children,
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.flare),
+                  label: 'Detector',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.science_outlined),
+                  label: 'Science',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.help_outline_rounded),
+                  label: 'Help',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              //selectedItemColor: Colors.white,
+              //unselectedItemColor: Colors.black54,
+              //backgroundColor: Colors.blueGrey,
+              onTap: _onItemTapped,
             ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Account'),
-              onTap: () {
-                Navigator.pushNamed(context, Routes.accountsPage);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.build),
-              title: Text('Detector Settings'),
-              onTap: () {
-                Navigator.pushNamed(context, Routes.detectorSettingsPage);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.leaderboard),
-              title: Text('Detector Statistics'),
-              onTap: () {
-                Navigator.pushNamed(context, Routes.detectorStatisticsPage);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flare),
-            label: 'Detector',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.science_outlined),
-            label: 'Science',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.help_outline_rounded),
-            label: 'Help',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        //selectedItemColor: Colors.white,
-        //unselectedItemColor: Colors.black54,
-        //backgroundColor: Colors.blueGrey,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-}
+          );
+        }
+        );
+      }
+    }

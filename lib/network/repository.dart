@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:credo_transcript/models/detection.dart';
+import 'package:credo_transcript/models/user.dart';
 import 'package:http/http.dart';
 
 import 'package:device_info/device_info.dart';
@@ -25,7 +26,7 @@ class CredoRepository {
   }
 
   late IdentityInfo _identityInfo;
-  RestApiClient _apiClient = RestApiClient(Client());
+  RestApiClient _apiClient = RestApiClient();
 
   Future<void> _getIdentityInfo() async {
     // to get device information
@@ -67,25 +68,32 @@ class CredoRepository {
 
   Future<void> requestLogin(String login, String password) async {
     LoginResponse loginResponse;
-
-    if (login.contains('@')) {
-      print("login by email");
-      loginResponse = await _apiClient
-          .login(LoginByEmailRequest(login, password, _identityInfo));
-    } else {
-      print("login by username");
+    try{
+      if (login.contains('@')) {
+        print("login by email");
+        loginResponse = await _apiClient
+            .login(LoginByEmailRequest(login, password, _identityInfo));
+      } else {
+        print("login by username");
       loginResponse = await _apiClient
           .login(LoginByUsernameRequest(login, password, _identityInfo));
-    }
+      }
 
-    // Authorisation token returned from server to be used for subsequent requests
-    var _token = loginResponse.token;
+      // Authorisation token returned from server to be used for subsequent requests
+      var _token = loginResponse.token;
 
-    // Saving token, username and password in shared preferences
-    if (_token != null) {
-      Prefs.setPrefString(Prefs.USER_TOKEN, _token);
-      Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
-      Prefs.setPrefString(Prefs.USER_PASSWORD, password);
+      // Saving token, username and password in shared preferences
+      if (_token != "") {
+        Prefs.setPrefString(Prefs.USER_TOKEN, _token);
+        Prefs.setPrefString(Prefs.USER_LOGIN, loginResponse.username);
+        Prefs.setPrefString(Prefs.USER_PASSWORD, password);
+        Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, loginResponse.displayName);
+        Prefs.setPrefString(Prefs.USER_EMAIL, loginResponse.email);
+        Prefs.setPrefString(Prefs.USER_TEAM, loginResponse.team);
+        Prefs.setPrefString(Prefs.USER_LANGUAGE, loginResponse.language);
+      }
+    } catch(e) {
+      print(e);
     }
   }
 
@@ -94,18 +102,24 @@ class CredoRepository {
     print(await Prefs.getPrefString(Prefs.USER_TOKEN));
     print(await Prefs.getPrefString(Prefs.USER_LOGIN));
     print(await Prefs.getPrefString(Prefs.USER_PASSWORD));
+    print(await Prefs.getPrefString(Prefs.USER_EMAIL));
+    print(await Prefs.getPrefString(Prefs.USER_DISPLAY_NAME));
+    print(await Prefs.getPrefString(Prefs.USER_TEAM));
+    
   }
 
   //clear preferences upon logout
-  Future<void> clearPrefs() async {
+  Future<void> clearLoginPrefs() async {
     try {
       bool tokenRemoved = await Prefs.removePref(Prefs.USER_TOKEN);
       bool loginRemoved = await Prefs.removePref(Prefs.USER_LOGIN);
       bool passwordRemoved = await Prefs.removePref(Prefs.USER_PASSWORD);
+      await Prefs.removePref(Prefs.USER_TEAM);
+      await Prefs.removePref(Prefs.USER_EMAIL);
+      await Prefs.removePref(Prefs.USER_DISPLAY_NAME);
+      await Prefs.removePref(Prefs.USER_LANGUAGE);
 
-      if (tokenRemoved && loginRemoved && passwordRemoved) {
-        //return true; should not need to return anything as we are dealing with an async future TODO check with eman that this is correct
-      } else {
+      if (!(tokenRemoved && loginRemoved && passwordRemoved)) {
         throw Exception("Logout failed!");
       }
     } catch (error) {
@@ -121,7 +135,23 @@ class CredoRepository {
   Future<bool> checkSavedLogin() async {
     var savedLogin = await Prefs.getPrefString(Prefs.USER_LOGIN);
     var savedPassword = await Prefs.getPrefString(Prefs.USER_PASSWORD);
+    _printPrefs();
+    return (savedLogin != "" && savedPassword != "");
+  }
 
-    return (savedLogin != null && savedPassword != null);
+  Future<void> requestUpdateUserInfo(String team, String displayName, String language) async {
+    UserInfoResponse userInfoResponse;
+
+    userInfoResponse = await _apiClient.updateUser(UpdateUserRequest(displayName, team, language, _identityInfo));
+
+    Prefs.setPrefString(Prefs.USER_TEAM, userInfoResponse.team);
+    Prefs.setPrefString(Prefs.USER_DISPLAY_NAME, userInfoResponse.displayName);
+    Prefs.setPrefString(Prefs.USER_LANGUAGE, userInfoResponse.language);    
+  }
+
+  Future requestRegisterAccount(String displayName, String team, String email, String password, String username) async {
+    await _apiClient.register(RegisterRequest(username, password, displayName, email, team, 'en', _identityInfo));
   }
 }
+
+

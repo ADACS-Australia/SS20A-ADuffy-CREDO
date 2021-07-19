@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../network/repository.dart';
 import '../main.dart';
+import 'RegisterAccountPage.dart';
 
 // Application Login Screen
 class LoginPage extends StatefulWidget {
@@ -10,12 +11,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // login & password field values
-  late String _login;
-  late String _password;
+  String _login = "";
+  String _password = "";
+
+  final _formKey = GlobalKey<FormState>();
 
   // Class the handles all interaction with CREDO API's
   CredoRepository _credoRepository = CredoRepository();
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override
   void initState() {
@@ -26,81 +28,139 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //Email/username field
-    final emailField = TextField(
-        obscureText: false,
-        style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+    final emailField = TextFormField(
+      style: TextStyle(color: Theme.of(context).primaryColor),
+      obscureText: false,
+      decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Username/Email",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onChanged: (value) {
-          _login = value;
-        });
+            border: OutlineInputBorder(),
+            ),
+      validator: (value){
+        if(value == null || value.isEmpty){
+          return "Please enter username or email";
+        }
+        return null;
+      },
+      onChanged: (value) {
+        _login = value;
+      },      
+    );
 
     //Password Field
-    final passwordField = TextField(
+    final passwordField = TextFormField(
         obscureText: true,
-        style: style,
+        style: TextStyle(color: Theme.of(context).primaryColor),
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            contentPadding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
             hintText: "Password",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder()
+            ),
+        validator: (value){
+          if(value == null || value.isEmpty){
+            return "Please enter password";
+          }
+          return null;
+        },
         onChanged: (value) {
           _password = value;
         });
-    //Login Field
-    final loginButton = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          // send login request to endpoint
-          _credoRepository.requestLogin(_login, _password);
-          // navigate to detection screen
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+
+    final loginButton = OutlinedButton(
+      style: Theme.of(context).outlinedButtonTheme.style,
+      onPressed: () {
+        if(_formKey.currentState!.validate()){
+          // Show progress
+          showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: Center(
+                child: Card(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    padding: EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ),
           );
-        },
-        child: Text("Login",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
+          _credoRepository.requestLogin(_login, _password)
+            .then((value){
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()));
+            },
+          ).onError((error, stackTrace) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString())
+                )
+              );
+          });
+        }
+      }, 
+      child: Text("LOGIN")
     );
 
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 45.0),
-                emailField,
-                SizedBox(height: 25.0),
-                passwordField,
-                SizedBox(
-                  height: 35.0,
-                ),
-                loginButton,
-                SizedBox(
-                  height: 15.0,
-                ),
-              ],
+    return Form(
+      key: _formKey,
+      child: Scaffold(
+        body: 
+        // Center(
+          Container(
+            constraints: BoxConstraints.expand(),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/credo_background.png"), // TODO: background image needs to be changed
+                fit: BoxFit.cover)),
+            child:// Center(
+              ListView(
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                children: [
+                  Image(image: AssetImage('assets/images/credo_logo.png'), height: 80, width: 200,),
+                  SizedBox(height: 15),
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    width: 350,
+                    height: 230,
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Text("Login", style: Theme.of(context).textTheme.headline5,),
+                        SizedBox(height: 24),
+                        Expanded(child: emailField),
+                        SizedBox(height:5),
+                        Expanded(child: passwordField),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 25, 0, 10), 
+                    child: Container(height: 50, child: loginButton,),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(0), 
+                    child: TextButton(
+                      child: Text("Register a new account"), 
+                      onPressed: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) => RegisterAccountPage()));
+                      },
+                    ),
+                  )
+                ],
+              // ),
             ),
           ),
-        ),
-      ),
+      )
     );
   }
 }

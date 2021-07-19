@@ -14,7 +14,7 @@ abstract class LoginRequest {
 
 class LoginByUsernameRequest extends LoginRequest {
   // login request username
-  String? username;
+  String username = "";
 
   LoginByUsernameRequest(String username, String password, IdentityInfo info) {
     this.username = username;
@@ -27,19 +27,19 @@ class LoginByUsernameRequest extends LoginRequest {
   }
 
   Map<String, dynamic> toJson() => {
-        "usename": username,
+        "username": username,
         "password": password,
         "device_id": deviceId,
         "device_model": deviceModel,
         "app_version": appVersion,
         "system_version": systemVersion,
-        "device_type": deviceType
+        "device_type": deviceType,
       };
 }
 
 class LoginByEmailRequest extends LoginRequest {
   /// login request using email
-  String? email;
+  String email = "";
 
   LoginByEmailRequest(String email, String password, IdentityInfo info) {
     this.email = email;
